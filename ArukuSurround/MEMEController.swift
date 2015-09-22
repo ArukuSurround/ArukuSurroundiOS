@@ -1,0 +1,277 @@
+//
+//  MEMEController.swift
+//  ArukuSurround
+//
+//  Created by 古川信行 on 2015/09/19.
+//  Copyright © 2015年 古川信行. All rights reserved.
+//
+
+import Foundation
+import CoreLocation
+
+class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
+
+    //デリゲート
+    var delegate:MEMEControllerDelegate! = nil
+    
+    //MEMEのデータ取得モード変更タイマー
+    var timerChangeDataMode:NSTimer?
+    
+    //ロケーションマネージャ
+    var locationManager = CLLocationManager()
+    
+    //最後に更新された位置情報
+    var currentLocation: CLLocation?
+    
+    //イニシャライザ
+    override init(){
+        super.init()
+        
+        //JINS MEME の 初期化
+        MEMELib.setAppClientId(Config.MEME_APP_ID, clientSecret: Config.MEME_APP_SECRET)
+        
+        //MEMELibのデリゲートを設定
+        MEMELib.sharedInstance().delegate = self
+        
+        //MEMELibをリアルタイムモードに設定
+        MEMELib.sharedInstance().changeDataMode(MEME_COM_REALTIME)
+        
+        //位置情報取得の為の初期化
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = 10.0
+        locationManager.delegate = self
+    }
+    
+    /** MEME検索を開始する
+    *
+    */
+    func startScanningMeme(){
+        //print("startScanningMeme \(MEMELib.sharedInstance())")
+        MEMELib.sharedInstance().startScanningPeripherals()
+    }
+    
+    /** 位置情報取得を開始する
+    *
+    */
+    func startUpdatingLocation(){
+        let status = CLLocationManager.authorizationStatus()
+        switch status{
+        case .Restricted, .Denied:
+            break
+        case .NotDetermined:
+            if locationManager.respondsToSelector("requestWhenInUseAuthorization"){
+                locationManager.requestWhenInUseAuthorization()
+            }else{
+                locationManager.startUpdatingLocation()
+            }
+        case .AuthorizedWhenInUse, .AuthorizedAlways:
+            locationManager.startUpdatingLocation()
+        //default:
+        //    break
+        }
+    }
+    
+    /** 指定のMEMEに接続する
+    *
+    * @param peripheral 接続対象のJINS MEME
+    */
+    func connectPeripheral(peripheral: CBPeripheral!){
+        MEMELib.sharedInstance().connectPeripheral(peripheral)
+    }
+    
+    /** MEMEの取得モードを切り替え
+    *
+    */
+    func fetchStandardData(timer:NSTimer){
+        MEMELib.sharedInstance().changeDataMode(MEME_COM_STANDARD)
+    }
+
+    /** リアルタイムモードのMEMEの情報と位置情報をサーバに送信する
+    *
+    */
+    func sendRealTimeData(data: MEMERealTimeData){
+        //print("MEME リアルタイム")
+        //歩行中かのステータスを確認
+        if data.isWalking != 1{
+            return
+        }
+        
+        // TODO: サーバへの保存処理を書く
+    }
+    
+    /** スタンダードモードのMEMEの情報と位置情報をサーバに送信する
+    *
+    */
+    func sendStandardData(data: MEMEStandardData){
+        print("MEME スタンダード")        
+        // TODO: サーバへの保存処理を書く
+    }
+    
+    // MARK: - MEMELibDelegate
+
+    /** 認証結果
+    *
+    * @param memeStatus 認証結果
+    *
+    */
+    @objc func memeAppAuthorized(memeStatus: MEMEStatus) {
+        print("memeAppAuthorized \(memeStatus)")
+    }
+    
+    /** スキャン結果受信
+    *
+    * @param peripheral スキャンして見つけたJINS MEME
+    *
+    */
+    @objc func memePeripheralFound(peripheral: CBPeripheral!) {
+        print("peripheral found \(peripheral.identifier.UUIDString)")
+        
+        if delegate != nil {
+            delegate?.memePeripheralFound(peripheral)
+        }
+    }
+    
+    /** JINS MEMEへの接続完了
+    *
+    * @param peripheral 接続されたJINS MEME
+    *
+    */
+    @objc func memePeripheralConnected(peripheral:CBPeripheral){
+    
+        //MEMEのモード切り替えタイマーを開始する
+        if timerChangeDataMode == nil {
+            timerChangeDataMode = NSTimer.scheduledTimerWithTimeInterval(60.0, target: self, selector: Selector("fetchStandardData:"), userInfo: nil, repeats: false)
+        }
+                
+        //MEMEが見つかったので位置情報取得も開始する
+        startUpdatingLocation()
+    }
+    
+    /** JINS MEMEとの切断を受け取る
+    *
+    * @param peripheral 切断されたJINS MEME
+    *
+    */
+    @objc func memePeripheralDisconneted(peripheral:CBPeripheral){
+        //デリゲートに通知
+        if delegate != nil {
+            delegate?.memePeripheralDisconneted(peripheral)
+        }
+    }
+    
+    /** MEME リアルタイムモードのデータ受信
+    *
+    * @param data MEMEから取得したリアルタイムデータ
+    *
+    */
+    @objc func memeRealTimeModeDataReceived(data: MEMERealTimeData) {
+        // 装着状態に異常あり
+        if data.fitError != 0 {
+            return
+        }
+        
+        //MEMEのステータスと位置情報をサーバに登録する
+        sendRealTimeData(data)
+        
+        //デリゲートに通知
+        if delegate != nil {
+            delegate?.memeRealTimeModeDataReceived(data, currentLocation: currentLocation)
+        }
+    }
+        
+    /** MEME スタンダードモードのデータ受信
+    *
+    * @param data MEMEから取得したデータ
+    *
+    */
+    @objc func memeStandardModeDataReceived(data: MEMEStandardData) {
+        // 装着状態に異常あり
+        if data.fitError != 0 {
+            return
+        }
+        
+        //MEMEのステータスと位置情報をサーバに登録する
+        sendStandardData(data)
+        
+        //デリゲートに通知
+        if delegate != nil {
+            delegate?.memeStandardModeDataReceived(data, currentLocation: currentLocation)
+        }
+        
+        //MEMELibをリアルタイムモードに設定
+        MEMELib.sharedInstance().changeDataMode(MEME_COM_REALTIME)
+    }
+    
+    // MARK: - CLLocationManagerDelegate
+    
+    /** ロケーション取得の許可ステータスの通知
+    *
+    * @param manager ロケーションマネージャー
+    * @param status 位置情報取得 認証ステータス
+    *
+    */
+    @objc func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        switch status{
+            case .Restricted, .Denied:
+                manager.stopUpdatingLocation()
+            case .AuthorizedWhenInUse, .AuthorizedAlways:
+                locationManager.startUpdatingLocation()
+            default:
+                break
+        }
+    }
+    
+    /** 位置情報の取得に成功した
+    * @param manager ロケーションマネージャー
+    * @param locations 取得できた位置情報一覧
+    *
+    */
+    @objc func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if locations.count <= 0{
+            return;
+        }
+        
+        //位置情報取得に成功
+        currentLocation = locations[ locations.count-1 ]
+        
+        print("currentLocation:\(currentLocation)")
+        
+    }
+}
+
+/** MEMEController デリゲート
+*
+*/
+@objc protocol MEMEControllerDelegate {
+    
+    /** スキャン結果受信デリゲート
+    *
+    * @param peripheral スキャンされたJINS MEME
+    *
+    */
+    func memePeripheralFound(peripheral: CBPeripheral!)
+    
+    
+    /** JINS MEMEとの切断を受け取る
+    *
+    * @param peripheral 切断されたJINS MEME
+    *
+    */
+    func memePeripheralDisconneted(peripheral:CBPeripheral);
+    
+    
+    /** MEME リアルタイムモードのデータ受信
+    *
+    * @param data MEMEから取得したデータ
+    *
+    */
+    func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation: CLLocation!)
+    
+    
+    /** MEME スタンダードモードのデータ受信
+    *
+    * @param data MEMEから取得したデータ
+    *
+    */
+    func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation: CLLocation!)
+}

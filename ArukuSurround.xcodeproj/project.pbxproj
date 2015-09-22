@@ -1,0 +1,669 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		15CD02067F5CCA4DF6A7748A /* libPods-ArukuSurround.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 811512405397845CFFE781ED /* libPods-ArukuSurround.a */; };
+		452F1EF71BAC4F1000261D97 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452F1EF61BAC4F1000261D97 /* Config.swift */; settings = {ASSET_TAGS = (); }; };
+		452F1EFA1BAC6A2A00261D97 /* ArukuSurroundUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452F1EF91BAC6A2A00261D97 /* ArukuSurroundUtil.swift */; settings = {ASSET_TAGS = (); }; };
+		4532283D1BAC49A800F999E1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4532283C1BAC49A800F999E1 /* AppDelegate.swift */; };
+		4532283F1BAC49A800F999E1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4532283E1BAC49A800F999E1 /* ViewController.swift */; };
+		453228421BAC49A800F999E1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 453228401BAC49A800F999E1 /* Main.storyboard */; };
+		453228441BAC49A800F999E1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 453228431BAC49A800F999E1 /* Assets.xcassets */; };
+		453228471BAC49A800F999E1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 453228451BAC49A800F999E1 /* LaunchScreen.storyboard */; };
+		453228521BAC49A800F999E1 /* ArukuSurroundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453228511BAC49A800F999E1 /* ArukuSurroundTests.swift */; };
+		4532285D1BAC49A800F999E1 /* ArukuSurroundUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4532285C1BAC49A800F999E1 /* ArukuSurroundUITests.swift */; };
+		457B06C31BB10BB800E1E5F9 /* coin.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 457B06AF1BB10BB800E1E5F9 /* coin.mp3 */; settings = {ASSET_TAGS = (); }; };
+		457B06C81BB10BB800E1E5F9 /* PixelMplus12-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 457B06B41BB10BB800E1E5F9 /* PixelMplus12-Bold.ttf */; settings = {ASSET_TAGS = (); }; };
+		457B06C91BB10BB800E1E5F9 /* PixelMplus12-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 457B06B51BB10BB800E1E5F9 /* PixelMplus12-Regular.ttf */; settings = {ASSET_TAGS = (); }; };
+		457B06CA1BB10BB800E1E5F9 /* poison.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 457B06B61BB10BB800E1E5F9 /* poison.mp3 */; settings = {ASSET_TAGS = (); }; };
+		457B06CC1BB10BB800E1E5F9 /* running.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 457B06B81BB10BB800E1E5F9 /* running.mp3 */; settings = {ASSET_TAGS = (); }; };
+		457B06CF1BB10BB800E1E5F9 /* walking.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 457B06BB1BB10BB800E1E5F9 /* walking.mp3 */; settings = {ASSET_TAGS = (); }; };
+		457B06D11BB10DCE00E1E5F9 /* SoundEffectUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457B06D01BB10DCE00E1E5F9 /* SoundEffectUtil.swift */; settings = {ASSET_TAGS = (); }; };
+		457B06D31BB1102600E1E5F9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 457B06D21BB1102500E1E5F9 /* AVFoundation.framework */; };
+		457B06D51BB148BC00E1E5F9 /* looking_around.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 457B06D41BB148BC00E1E5F9 /* looking_around.mp3 */; settings = {ASSET_TAGS = (); }; };
+		458023A11BACB0620008AB2E /* MEMELib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 458023A01BACB0620008AB2E /* MEMELib.framework */; settings = {ASSET_TAGS = (); }; };
+		458023A51BACB0A30008AB2E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 458023A41BACB0A30008AB2E /* CoreLocation.framework */; };
+		458023A71BAD133B0008AB2E /* MEMEController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458023A61BAD133B0008AB2E /* MEMEController.swift */; settings = {ASSET_TAGS = (); }; };
+		458023AA1BAD39CA0008AB2E /* MEMELib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 458023A01BACB0620008AB2E /* MEMELib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4532284E1BAC49A800F999E1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 453228311BAC49A800F999E1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 453228381BAC49A800F999E1;
+			remoteInfo = ArukuSurround;
+		};
+		453228591BAC49A800F999E1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 453228311BAC49A800F999E1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 453228381BAC49A800F999E1;
+			remoteInfo = ArukuSurround;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		458023A91BAD39A70008AB2E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				458023AA1BAD39CA0008AB2E /* MEMELib.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		3FB0915A2B174DDA5EE54856 /* Pods-ArukuSurround.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ArukuSurround.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ArukuSurround/Pods-ArukuSurround.debug.xcconfig"; sourceTree = "<group>"; };
+		452F1EF51BAC4B9600261D97 /* ArukuSurround-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ArukuSurround-Bridging-Header.h"; sourceTree = "<group>"; };
+		452F1EF61BAC4F1000261D97 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		452F1EF91BAC6A2A00261D97 /* ArukuSurroundUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArukuSurroundUtil.swift; sourceTree = "<group>"; };
+		453228391BAC49A800F999E1 /* ArukuSurround.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArukuSurround.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4532283C1BAC49A800F999E1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4532283E1BAC49A800F999E1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		453228411BAC49A800F999E1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		453228431BAC49A800F999E1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		453228461BAC49A800F999E1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		453228481BAC49A800F999E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4532284D1BAC49A800F999E1 /* ArukuSurroundTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArukuSurroundTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		453228511BAC49A800F999E1 /* ArukuSurroundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArukuSurroundTests.swift; sourceTree = "<group>"; };
+		453228531BAC49A800F999E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		453228581BAC49A800F999E1 /* ArukuSurroundUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArukuSurroundUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4532285C1BAC49A800F999E1 /* ArukuSurroundUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArukuSurroundUITests.swift; sourceTree = "<group>"; };
+		4532285E1BAC49A800F999E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		457B06AF1BB10BB800E1E5F9 /* coin.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = coin.mp3; sourceTree = "<group>"; };
+		457B06B41BB10BB800E1E5F9 /* PixelMplus12-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PixelMplus12-Bold.ttf"; sourceTree = "<group>"; };
+		457B06B51BB10BB800E1E5F9 /* PixelMplus12-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PixelMplus12-Regular.ttf"; sourceTree = "<group>"; };
+		457B06B61BB10BB800E1E5F9 /* poison.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = poison.mp3; sourceTree = "<group>"; };
+		457B06B81BB10BB800E1E5F9 /* running.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = running.mp3; sourceTree = "<group>"; };
+		457B06BB1BB10BB800E1E5F9 /* walking.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = walking.mp3; sourceTree = "<group>"; };
+		457B06D01BB10DCE00E1E5F9 /* SoundEffectUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundEffectUtil.swift; sourceTree = "<group>"; };
+		457B06D21BB1102500E1E5F9 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		457B06D41BB148BC00E1E5F9 /* looking_around.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = looking_around.mp3; sourceTree = "<group>"; };
+		458023A01BACB0620008AB2E /* MEMELib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MEMELib.framework; sourceTree = "<group>"; };
+		458023A41BACB0A30008AB2E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		458023A61BAD133B0008AB2E /* MEMEController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MEMEController.swift; sourceTree = "<group>"; };
+		5701DBFEAA4029089B1A8FB4 /* Pods-ArukuSurround.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ArukuSurround.release.xcconfig"; path = "Pods/Target Support Files/Pods-ArukuSurround/Pods-ArukuSurround.release.xcconfig"; sourceTree = "<group>"; };
+		811512405397845CFFE781ED /* libPods-ArukuSurround.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ArukuSurround.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		453228361BAC49A800F999E1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				457B06D31BB1102600E1E5F9 /* AVFoundation.framework in Frameworks */,
+				458023A51BACB0A30008AB2E /* CoreLocation.framework in Frameworks */,
+				458023A11BACB0620008AB2E /* MEMELib.framework in Frameworks */,
+				15CD02067F5CCA4DF6A7748A /* libPods-ArukuSurround.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4532284A1BAC49A800F999E1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		453228551BAC49A800F999E1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2E068521EFB33293847F46A7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3FB0915A2B174DDA5EE54856 /* Pods-ArukuSurround.debug.xcconfig */,
+				5701DBFEAA4029089B1A8FB4 /* Pods-ArukuSurround.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		453228301BAC49A800F999E1 = {
+			isa = PBXGroup;
+			children = (
+				4532283B1BAC49A800F999E1 /* ArukuSurround */,
+				453228501BAC49A800F999E1 /* ArukuSurroundTests */,
+				4532285B1BAC49A800F999E1 /* ArukuSurroundUITests */,
+				4532283A1BAC49A800F999E1 /* Products */,
+				2E068521EFB33293847F46A7 /* Pods */,
+				97AC41D13811D62A269BC88A /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		4532283A1BAC49A800F999E1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				453228391BAC49A800F999E1 /* ArukuSurround.app */,
+				4532284D1BAC49A800F999E1 /* ArukuSurroundTests.xctest */,
+				453228581BAC49A800F999E1 /* ArukuSurroundUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4532283B1BAC49A800F999E1 /* ArukuSurround */ = {
+			isa = PBXGroup;
+			children = (
+				457B06A71BB10B5200E1E5F9 /* Resource */,
+				452F1EF61BAC4F1000261D97 /* Config.swift */,
+				452F1EF91BAC6A2A00261D97 /* ArukuSurroundUtil.swift */,
+				458023A61BAD133B0008AB2E /* MEMEController.swift */,
+				457B06D01BB10DCE00E1E5F9 /* SoundEffectUtil.swift */,
+				4532283C1BAC49A800F999E1 /* AppDelegate.swift */,
+				4532283E1BAC49A800F999E1 /* ViewController.swift */,
+				453228401BAC49A800F999E1 /* Main.storyboard */,
+				453228431BAC49A800F999E1 /* Assets.xcassets */,
+				453228451BAC49A800F999E1 /* LaunchScreen.storyboard */,
+				453228481BAC49A800F999E1 /* Info.plist */,
+				452F1EF51BAC4B9600261D97 /* ArukuSurround-Bridging-Header.h */,
+			);
+			path = ArukuSurround;
+			sourceTree = "<group>";
+		};
+		453228501BAC49A800F999E1 /* ArukuSurroundTests */ = {
+			isa = PBXGroup;
+			children = (
+				453228511BAC49A800F999E1 /* ArukuSurroundTests.swift */,
+				453228531BAC49A800F999E1 /* Info.plist */,
+			);
+			path = ArukuSurroundTests;
+			sourceTree = "<group>";
+		};
+		4532285B1BAC49A800F999E1 /* ArukuSurroundUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4532285C1BAC49A800F999E1 /* ArukuSurroundUITests.swift */,
+				4532285E1BAC49A800F999E1 /* Info.plist */,
+			);
+			path = ArukuSurroundUITests;
+			sourceTree = "<group>";
+		};
+		457B06A71BB10B5200E1E5F9 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				457B06AF1BB10BB800E1E5F9 /* coin.mp3 */,
+				457B06B41BB10BB800E1E5F9 /* PixelMplus12-Bold.ttf */,
+				457B06B51BB10BB800E1E5F9 /* PixelMplus12-Regular.ttf */,
+				457B06B61BB10BB800E1E5F9 /* poison.mp3 */,
+				457B06B81BB10BB800E1E5F9 /* running.mp3 */,
+				457B06BB1BB10BB800E1E5F9 /* walking.mp3 */,
+				457B06D41BB148BC00E1E5F9 /* looking_around.mp3 */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		97AC41D13811D62A269BC88A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				457B06D21BB1102500E1E5F9 /* AVFoundation.framework */,
+				458023A41BACB0A30008AB2E /* CoreLocation.framework */,
+				458023A01BACB0620008AB2E /* MEMELib.framework */,
+				811512405397845CFFE781ED /* libPods-ArukuSurround.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		453228381BAC49A800F999E1 /* ArukuSurround */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 453228611BAC49A800F999E1 /* Build configuration list for PBXNativeTarget "ArukuSurround" */;
+			buildPhases = (
+				3FE41879B67F979D1E58217B /* Check Pods Manifest.lock */,
+				453228351BAC49A800F999E1 /* Sources */,
+				453228361BAC49A800F999E1 /* Frameworks */,
+				453228371BAC49A800F999E1 /* Resources */,
+				40B2FED67E5132D6FE4745D4 /* Copy Pods Resources */,
+				458023A91BAD39A70008AB2E /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ArukuSurround;
+			productName = ArukuSurround;
+			productReference = 453228391BAC49A800F999E1 /* ArukuSurround.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4532284C1BAC49A800F999E1 /* ArukuSurroundTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 453228641BAC49A800F999E1 /* Build configuration list for PBXNativeTarget "ArukuSurroundTests" */;
+			buildPhases = (
+				453228491BAC49A800F999E1 /* Sources */,
+				4532284A1BAC49A800F999E1 /* Frameworks */,
+				4532284B1BAC49A800F999E1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4532284F1BAC49A800F999E1 /* PBXTargetDependency */,
+			);
+			name = ArukuSurroundTests;
+			productName = ArukuSurroundTests;
+			productReference = 4532284D1BAC49A800F999E1 /* ArukuSurroundTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		453228571BAC49A800F999E1 /* ArukuSurroundUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 453228671BAC49A800F999E1 /* Build configuration list for PBXNativeTarget "ArukuSurroundUITests" */;
+			buildPhases = (
+				453228541BAC49A800F999E1 /* Sources */,
+				453228551BAC49A800F999E1 /* Frameworks */,
+				453228561BAC49A800F999E1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4532285A1BAC49A800F999E1 /* PBXTargetDependency */,
+			);
+			name = ArukuSurroundUITests;
+			productName = ArukuSurroundUITests;
+			productReference = 453228581BAC49A800F999E1 /* ArukuSurroundUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		453228311BAC49A800F999E1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "古川信行";
+				TargetAttributes = {
+					453228381BAC49A800F999E1 = {
+						CreatedOnToolsVersion = 7.0;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
+					4532284C1BAC49A800F999E1 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 453228381BAC49A800F999E1;
+					};
+					453228571BAC49A800F999E1 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 453228381BAC49A800F999E1;
+					};
+				};
+			};
+			buildConfigurationList = 453228341BAC49A800F999E1 /* Build configuration list for PBXProject "ArukuSurround" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 453228301BAC49A800F999E1;
+			productRefGroup = 4532283A1BAC49A800F999E1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				453228381BAC49A800F999E1 /* ArukuSurround */,
+				4532284C1BAC49A800F999E1 /* ArukuSurroundTests */,
+				453228571BAC49A800F999E1 /* ArukuSurroundUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		453228371BAC49A800F999E1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				453228471BAC49A800F999E1 /* LaunchScreen.storyboard in Resources */,
+				453228441BAC49A800F999E1 /* Assets.xcassets in Resources */,
+				457B06C81BB10BB800E1E5F9 /* PixelMplus12-Bold.ttf in Resources */,
+				457B06CA1BB10BB800E1E5F9 /* poison.mp3 in Resources */,
+				457B06CC1BB10BB800E1E5F9 /* running.mp3 in Resources */,
+				453228421BAC49A800F999E1 /* Main.storyboard in Resources */,
+				457B06CF1BB10BB800E1E5F9 /* walking.mp3 in Resources */,
+				457B06D51BB148BC00E1E5F9 /* looking_around.mp3 in Resources */,
+				457B06C31BB10BB800E1E5F9 /* coin.mp3 in Resources */,
+				457B06C91BB10BB800E1E5F9 /* PixelMplus12-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4532284B1BAC49A800F999E1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		453228561BAC49A800F999E1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3FE41879B67F979D1E58217B /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		40B2FED67E5132D6FE4745D4 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ArukuSurround/Pods-ArukuSurround-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		453228351BAC49A800F999E1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				458023A71BAD133B0008AB2E /* MEMEController.swift in Sources */,
+				4532283F1BAC49A800F999E1 /* ViewController.swift in Sources */,
+				4532283D1BAC49A800F999E1 /* AppDelegate.swift in Sources */,
+				452F1EFA1BAC6A2A00261D97 /* ArukuSurroundUtil.swift in Sources */,
+				457B06D11BB10DCE00E1E5F9 /* SoundEffectUtil.swift in Sources */,
+				452F1EF71BAC4F1000261D97 /* Config.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		453228491BAC49A800F999E1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				453228521BAC49A800F999E1 /* ArukuSurroundTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		453228541BAC49A800F999E1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4532285D1BAC49A800F999E1 /* ArukuSurroundUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4532284F1BAC49A800F999E1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 453228381BAC49A800F999E1 /* ArukuSurround */;
+			targetProxy = 4532284E1BAC49A800F999E1 /* PBXContainerItemProxy */;
+		};
+		4532285A1BAC49A800F999E1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 453228381BAC49A800F999E1 /* ArukuSurround */;
+			targetProxy = 453228591BAC49A800F999E1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		453228401BAC49A800F999E1 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				453228411BAC49A800F999E1 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		453228451BAC49A800F999E1 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				453228461BAC49A800F999E1 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4532285F1BAC49A800F999E1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(PRODUCT_NAME)/$(PRODUCT_NAME)-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		453228601BAC49A800F999E1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(PRODUCT_NAME)/$(PRODUCT_NAME)-Bridging-Header.h";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		453228621BAC49A800F999E1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FB0915A2B174DDA5EE54856 /* Pods-ArukuSurround.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				INFOPLIST_FILE = ArukuSurround/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.tf-web.ArukuSurround";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(PRODUCT_NAME)/$(PRODUCT_NAME)-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		453228631BAC49A800F999E1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5701DBFEAA4029089B1A8FB4 /* Pods-ArukuSurround.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				INFOPLIST_FILE = ArukuSurround/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.tf-web.ArukuSurround";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(PRODUCT_NAME)/$(PRODUCT_NAME)-Bridging-Header.h";
+			};
+			name = Release;
+		};
+		453228651BAC49A800F999E1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = ArukuSurroundTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.tf-web.ArukuSurroundTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArukuSurround.app/ArukuSurround";
+			};
+			name = Debug;
+		};
+		453228661BAC49A800F999E1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = ArukuSurroundTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.tf-web.ArukuSurroundTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArukuSurround.app/ArukuSurround";
+			};
+			name = Release;
+		};
+		453228681BAC49A800F999E1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = ArukuSurroundUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.tf-web.ArukuSurroundUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = ArukuSurround;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		453228691BAC49A800F999E1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = ArukuSurroundUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.tf-web.ArukuSurroundUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = ArukuSurround;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		453228341BAC49A800F999E1 /* Build configuration list for PBXProject "ArukuSurround" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4532285F1BAC49A800F999E1 /* Debug */,
+				453228601BAC49A800F999E1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		453228611BAC49A800F999E1 /* Build configuration list for PBXNativeTarget "ArukuSurround" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				453228621BAC49A800F999E1 /* Debug */,
+				453228631BAC49A800F999E1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		453228641BAC49A800F999E1 /* Build configuration list for PBXNativeTarget "ArukuSurroundTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				453228651BAC49A800F999E1 /* Debug */,
+				453228661BAC49A800F999E1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		453228671BAC49A800F999E1 /* Build configuration list for PBXNativeTarget "ArukuSurroundUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				453228681BAC49A800F999E1 /* Debug */,
+				453228691BAC49A800F999E1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 453228311BAC49A800F999E1 /* Project object */;
+}
