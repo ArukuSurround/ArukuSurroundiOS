@@ -71,11 +71,18 @@ class ViewController: UIViewController {
         ArukuSurroundUtil.saveSetting(setting)
     }
     
-    /** MEMEを検索して接続
+    /** 歩く事を開始
     *
     */
-    @IBAction func clickBtnMemeSearch(sender: AnyObject) {
-        ArukuSurroundUtil.startScanningMeme()
+    @IBAction func clickBtnStartWalk(sender: AnyObject) {
+        ArukuSurroundUtil.startWalk()
+    }
+    
+    /** 歩く事を停止
+    *
+    */
+    @IBAction func clickBtnEndWalk(sender: AnyObject) {
+        ArukuSurroundUtil.endWalk()
     }
 }
 

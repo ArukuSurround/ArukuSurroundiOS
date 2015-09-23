@@ -13,7 +13,7 @@ import Foundation
 */
 class ArukuSurroundUtil:NSObject {
     //MMEMの状態通知デリゲート
-    static var utilDelegate:ArukuSurroundUtilMEMEDelegate?
+    static var utilDelegate:ArukuSurroundUtilMEMEDelegate!
     
     //各種設定をロードして保持する
     static var setting:ArukuSurroundSetting!
@@ -22,12 +22,24 @@ class ArukuSurroundUtil:NSObject {
     static var memeController:MEMEController!
     
     // 接続中のJINS MEME
-    static var currentPeripheral:CBPeripheral!
+    static var currentPeripheral:CBPeripheral! = nil
     
+    /** イニシャライザ
+    *
+    */
     override init(){
         super.init()
     }
     
+    /** メインスレッドで実行する
+    *
+    * @param block メインスレッドで実行する処理
+    *
+    */
+    static func dispatch_async_main(block: () -> ()) {
+        dispatch_async(dispatch_get_main_queue(), block)
+    }
+
     /** アプリケーション起動時の初期化 処理
     *
     */
@@ -46,8 +58,10 @@ class ArukuSurroundUtil:NSObject {
         
         //MEMEをコントロールするクラス
         utilDelegate = ArukuSurroundUtilMEMEDelegate();
-        utilDelegate?.setting = setting;
-        
+        utilDelegate.setting = setting;
+        //セーブ毎に変更する UUIDを設定する
+        utilDelegate.saveLogUuid = NSUUID().UUIDString
+            
         memeController = MEMEController()
         memeController?.delegate = utilDelegate;
     }
@@ -221,6 +235,7 @@ class ArukuSurroundUtil:NSObject {
         if log.user != nil {
             //保存済みの場合は更新する
             let query:NCMBQuery = NCMBQuery.init(className: className)
+            query.whereKey ("uuid",equalTo:log.uuid)
             query.whereKey ("user",equalTo:log.user)
             query.whereKey ("latitude",equalTo:log.latitude)
             query.whereKey ("longitude",equalTo:log.longitude)
@@ -232,7 +247,8 @@ class ArukuSurroundUtil:NSObject {
                         let obj:NCMBObject = objects[0] as! NCMBObject
                         //obj.setObject(log.latitude, forKey: "latitude")
                         //obj.setObject(log.longitude, forKey: "longitude")
-                        obj.setObject(log.walk_status, forKey: "walkStatus")
+                        obj.setObject(log.walkStatus, forKey: "walkStatus")
+                        obj.setObject(log.stepCount, forKey: "stepCount")
                         obj.save(&saveError)
                         if saveError == nil {
                             print("[UPDATE] Done")
@@ -244,10 +260,12 @@ class ArukuSurroundUtil:NSObject {
                     else{
                         //新規作成
                         let obj:NCMBObject = NCMBObject.init(className:className)
+                        obj.setObject(log.uuid, forKey: "uuid")
                         obj.setObject(log.user, forKey: "user")
                         obj.setObject(log.latitude, forKey: "latitude")
                         obj.setObject(log.longitude, forKey: "longitude")
-                        obj.setObject(log.walk_status, forKey: "walkStatus")
+                        obj.setObject(log.walkStatus, forKey: "walkStatus")
+                        obj.setObject(log.stepCount, forKey: "stepCount")
                         obj.save(&saveError)
                         if saveError == nil {
                             print("[SAVE] Done")
@@ -264,222 +282,100 @@ class ArukuSurroundUtil:NSObject {
         }
     }
     
-    /** JINS MEME の 検索
+    /** 歩行ログを集計
+    *
+    * @param logUuid セーブ毎にユニークな ID
+    * @param callback 集計結果をコールバックする
+    */
+    static func aggregateWalkLog(logUuid:String,callback: ((data:NSDictionary)->Void)){
+        let className = "WalkLog"
+        
+        //ログイン中のユーザーを設定
+        let user:NCMBUser = NCMBUser.currentUser()
+        
+        let query:NCMBQuery = NCMBQuery.init(className: className)
+        query.whereKey("uuid",equalTo:logUuid)
+        query.whereKey("user",equalTo:user)
+        query.orderByDescending("stepCount")
+        query.findObjectsInBackgroundWithBlock( { (NSArray objects, NSError error) in
+            if error == nil {
+                if objects.count > 0 {
+                    //歩いた歩数
+                    let obj:NCMBObject = objects[0] as! NCMBObject
+                    let stepCount:Int = obj.objectForKey("stepCount") as! Int
+                    //print("stepCount:\(stepCount)");
+                    
+                    //TOTO: 走ったトータル時間
+                    //TOTO: 姿勢が悪かったトータル時間
+                    //TODO: 眠気のあったトータル時間
+                    
+                    //集計結果をコールバックする
+                    let data:NSDictionary = ["stepCount":stepCount]
+                    callback(data:data)
+                }
+                else{
+                    //集計対象のレコードが無かった
+                }
+            }
+            else{
+               print("[QUERY-ERROR] \(error)");
+            }
+        })
+    }
+    
+    /** JINS MEME の 検索 & 接続
     *
     */
     static func startScanningMeme(){
         print("startScanningMeme");
         memeController?.startScanningMeme();
     }
-
-}
-
-class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     
-    //キョロキョロ(首を振っているか)判定の為の値
-    var lodYaw: Float = 0
     
-    //キョロキョロしているか？の判定用カウンタ
-    var lookingAroundCount:Int = 0
-    
-    //姿勢が悪いか？の判定用カウンタ
-    var badPostureCount:Int = 0
-    
-    //走っているか？の判定用カウンタ
-    var runningCount:Int = 0
-    
-    //歩行中ステータス列挙型
-    enum Condition {
-        case Walking //歩行
-        case Running //走っている
-        case BadPosture //姿勢が悪い
-        case Speepy //眠気
-        case LookingAround //キョロキョロしている
-    }
-    
-    //現在の歩行ステータスを保存する
-    var currentCondition:Condition = .Walking
-    
-    //歩行中か走っているかの判定用のタイムスタンプ
-    var lastStepTimestamp:NSDate = NSDate()
-    
-    //各種設定をロードして保持する
-    var setting:ArukuSurroundSetting!
-    
-    /** スキャン結果受信デリゲート
-    *
-    * @param peripheral スキャンされたJINS MEME
+    /** 歩くの処理を開始
     *
     */
-    @objc func memePeripheralFound(peripheral: CBPeripheral!){
-        print("memePeripheralFound \(peripheral)")
-        // UUID決め打ちでつなぐ
-        /*
-        if peripheral.identifier.UUIDString == MEME_DEVICE_UUID {
-            MEMEController.connectPeripheral(peripheral);
-        }
-        */
-    }
-    
-    /** JINS MEMEとの切断を受け取る
-    *
-    * @param peripheral 切断されたJINS MEME
-    *
-    */
-    @objc func memePeripheralDisconneted(peripheral:CBPeripheral){
-        print("memePeripheralDisconneted \(peripheral)")
-    }
-    
-    /** MEME リアルタイムモードのデータ受信
-    *
-    * @param data MEMEから取得したデータ
-    *
-    */
-    @objc func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation: CLLocation!){
-        //歩くスピードで SE を変更したりする
-        //print("memeRealTimeModeDataReceived \(data)")
+    static func startWalk(){
+        print("startWalk");
+        //セーブ毎に変更する UUIDを設定する
+        utilDelegate.saveLogUuid = NSUUID().UUIDString
         
-        doWalking(data)
-    }
-    
-    
-    /** 歩行中の処理
-    *
-    * @param data MEMEから取得したリアルタイムデータ
-    *
-    */
-    func doWalking(data: MEMERealTimeData){
-        //歩行中かのステータスを確認
-        if data.isWalking != 1 {
-            return
-        }
-        
-        //初期値は 歩行中 とする
-        currentCondition = .Walking
-        
-        //姿勢を表す角度で歩いていか走っているかの判定をする
-        if data.pitch > 25 {
-            badPostureCount += 1
-        }
-        else{
-            badPostureCount = 0;
-        }
-        if badPostureCount > 3 {
-            //前傾姿勢が長く長く続くと 悪い姿勢 とする
-            currentCondition = .BadPosture
-        }
-        
-        //キョロキョロしているか判定する
-        if currentCondition == .Walking {
-            //data.yaw
-            var tmp:Float = data.yaw - lodYaw
-            if tmp < 0{
-                tmp = tmp * -1
-            }
-            
-            if tmp > 5.0 {
-                lookingAroundCount += 1
-            }
-            else{
-                lookingAroundCount = 0
-            }
-            lodYaw = data.yaw
-            
-            if lookingAroundCount > 2 {
-                //キョロキョロしている事にする
-                currentCondition = .LookingAround
-            }
-        }
-        
-        if currentCondition == .Walking {
-            //走っているかの判定
-            if Double(NSDate().timeIntervalSinceDate(lastStepTimestamp)) < 0.5{
-                runningCount += 1
-            }
-            else{
-                runningCount = 0
-            }
-            lastStepTimestamp = NSDate()
-            
-            if runningCount > 2 {
-                //間隔が短いので走っている事にする
-                currentCondition = .Running
-            }
-        }
-        
-        print("doWalking currentCondition:\(currentCondition)")
-        
-        
-        // currentCondition で 歩行中SEの変更
-        switch currentCondition {
-        case .Running:
-            SoundEffectUtil.play("running")
-        case .BadPosture:
-            SoundEffectUtil.play("poison")
-        case .LookingAround:
-            SoundEffectUtil.play("looking_around")
-        default:
-            SoundEffectUtil.play("coin")
-        }
-        
+        //JINS MEME の 検索 & 接続
+        startScanningMeme()
     }
 
-    /** MEME スタンダードモードのデータ受信
-    *
-    * @param data MEMEから取得したデータ
+    /** 歩く処理を終了
     *
     */
-    @objc func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation: CLLocation!){
-        print("memeStandardModeDataReceived \(data)")
-        
-        //TODO: 眠気のステータスを確認
-        if data.sleepy  == MEME_FCS_A_LITTLE {
-            //少し眠い
+    static func endWalk(){
+        print("endWalk");
+        // BOCCOにメッセージを送る為の処理をする
+        // utilDelegate.saveLogUuid をキーに集計
+        aggregateWalkLog(utilDelegate.saveLogUuid,callback: {(data) -> Void in
+            //サーバ側で現在までの歩数やステータスを取得 集計
             
-        }
-        else if data.sleepy  == MEME_FCS_VERY {
-            //大変眠い
+            let stepCount:Int = data.objectForKey("stepCount") as! Int
             
-        }
-        
+            //TODO: 集計結果にあったメッセージをBOCCOに送る
+            let text:String = "今回の歩数は \(stepCount)歩でした。次回もがんばって!"
+            
+            BoccoAPI.postMessageText( setting.bocco_room_id!, access_token: setting.bocco_access_token!, text: text,
+                callback: { (result) -> Void in
+                
+            })
+        })
     }
 }
 
-/** 各設定値
-*
-*/
-class ArukuSurroundSetting {
-    
-    //ユーザー
-    var user:NCMBUser!
-    
-    //BOCCO room_id
-    var bocco_room_id:String?
-
-    //BOCCO ユーザーアクセストークン
-    var bocco_access_token:String?
-    
-    //JINS MEMEの識別子
-    var jins_meme_device_uuid:String?
-    
-    //イニシャライザ
-    init(){
-        
-    }
-    
-    //イニシャライザ
-    init(object:NCMBObject){
-        user = object.objectForKey("user") as! NCMBUser
-        bocco_room_id = object.objectForKey("boccoRoomId") as? String
-        bocco_access_token = object.objectForKey("boccoAccessToken") as? String
-        jins_meme_device_uuid = object.objectForKey("jinsMemeDeviceUuid") as? String
-    }
-}
 
 /** 歩行ログ
 *
 */
 class ArukuSurroundWalkLog {
+    
+    //ログ識別
+    var uuid:String!
+    
     //ユーザー
     var user:NCMBUser!
     
@@ -490,5 +386,10 @@ class ArukuSurroundWalkLog {
     var longitude:Double?
     
     //歩行ステータス
-    var walk_status:Int?
+    var walkStatus:Int?
+    
+    //歩数
+    var stepCount:Int?
+    
+    //TODO: MEMEからの生データを保存すると詳細ログを解析できる
 }

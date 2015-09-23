@@ -23,7 +23,9 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     //最後に更新された位置情報
     var currentLocation: CLLocation?
     
-    //イニシャライザ
+    /** イニシャライザ
+    *
+    */
     override init(){
         super.init()
         
@@ -42,6 +44,15 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
         locationManager.delegate = self
     }
     
+    /** メインスレッドで実行する
+    *
+    * @param block メインスレッドで実行する処理
+    *
+    */
+    static func dispatch_async_main(block: () -> ()) {
+        dispatch_async(dispatch_get_main_queue(), block)
+    }
+    
     /** MEME検索を開始する
     *
     */
@@ -54,18 +65,21 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     *
     */
     func startUpdatingLocation(){
-        let status = CLLocationManager.authorizationStatus()
+        let status:CLAuthorizationStatus = CLLocationManager.authorizationStatus()
+        //print("startUpdatingLocation status:\(status.hashValue)")
         switch status{
-        case .Restricted, .Denied:
-            break
         case .NotDetermined:
             if locationManager.respondsToSelector("requestWhenInUseAuthorization"){
                 locationManager.requestWhenInUseAuthorization()
             }else{
                 locationManager.startUpdatingLocation()
             }
+            break
         case .AuthorizedWhenInUse, .AuthorizedAlways:
             locationManager.startUpdatingLocation()
+            break
+        case .Restricted, .Denied:
+            break
         //default:
         //    break
         }
@@ -85,27 +99,6 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     func fetchStandardData(timer:NSTimer){
         MEMELib.sharedInstance().changeDataMode(MEME_COM_STANDARD)
     }
-
-    /** リアルタイムモードのMEMEの情報と位置情報をサーバに送信する
-    *
-    */
-    func sendRealTimeData(data: MEMERealTimeData){
-        //print("MEME リアルタイム")
-        //歩行中かのステータスを確認
-        if data.isWalking != 1{
-            return
-        }
-        
-        // TODO: サーバへの保存処理を書く
-    }
-    
-    /** スタンダードモードのMEMEの情報と位置情報をサーバに送信する
-    *
-    */
-    func sendStandardData(data: MEMEStandardData){
-        print("MEME スタンダード")        
-        // TODO: サーバへの保存処理を書く
-    }
     
     // MARK: - MEMELibDelegate
 
@@ -115,7 +108,7 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     *
     */
     @objc func memeAppAuthorized(memeStatus: MEMEStatus) {
-        print("memeAppAuthorized \(memeStatus)")
+        //print("memeAppAuthorized \(memeStatus)")
     }
     
     /** スキャン結果受信
@@ -144,7 +137,14 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
         }
                 
         //MEMEが見つかったので位置情報取得も開始する
-        startUpdatingLocation()
+        MEMEController.dispatch_async_main { () -> () in
+            self.startUpdatingLocation()
+        }
+        
+        //デリゲートに通知
+        if delegate != nil {
+            delegate?.memePeripheralConnected( peripheral )
+        }
     }
     
     /** JINS MEMEとの切断を受け取る
@@ -165,13 +165,15 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     *
     */
     @objc func memeRealTimeModeDataReceived(data: MEMERealTimeData) {
+        if currentLocation == nil{
+            print("currentLocation is nil")
+            return
+        }
+        
         // 装着状態に異常あり
         if data.fitError != 0 {
             return
         }
-        
-        //MEMEのステータスと位置情報をサーバに登録する
-        sendRealTimeData(data)
         
         //デリゲートに通知
         if delegate != nil {
@@ -185,13 +187,15 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     *
     */
     @objc func memeStandardModeDataReceived(data: MEMEStandardData) {
+        if currentLocation == nil{
+            print("currentLocation is nil")
+            return
+        }
+        
         // 装着状態に異常あり
         if data.fitError != 0 {
             return
         }
-        
-        //MEMEのステータスと位置情報をサーバに登録する
-        sendStandardData(data)
         
         //デリゲートに通知
         if delegate != nil {
@@ -234,7 +238,7 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
         //位置情報取得に成功
         currentLocation = locations[ locations.count-1 ]
         
-        print("currentLocation:\(currentLocation)")
+        //print("currentLocation:\(currentLocation)")
         
     }
 }
@@ -251,6 +255,13 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     */
     func memePeripheralFound(peripheral: CBPeripheral!)
     
+    
+    /** JINS MEMEへの接続完了
+    *
+    * @param peripheral 接続されたJINS MEME
+    *
+    */
+    func memePeripheralConnected(peripheral:CBPeripheral)
     
     /** JINS MEMEとの切断を受け取る
     *

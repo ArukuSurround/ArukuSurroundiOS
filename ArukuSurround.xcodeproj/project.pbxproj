@@ -26,6 +26,10 @@
 		457B06D11BB10DCE00E1E5F9 /* SoundEffectUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457B06D01BB10DCE00E1E5F9 /* SoundEffectUtil.swift */; settings = {ASSET_TAGS = (); }; };
 		457B06D31BB1102600E1E5F9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 457B06D21BB1102500E1E5F9 /* AVFoundation.framework */; };
 		457B06D51BB148BC00E1E5F9 /* looking_around.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 457B06D41BB148BC00E1E5F9 /* looking_around.mp3 */; settings = {ASSET_TAGS = (); }; };
+		457B06D71BB153B000E1E5F9 /* speepy.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 457B06D61BB153B000E1E5F9 /* speepy.mp3 */; settings = {ASSET_TAGS = (); }; };
+		457B06D91BB19F6600E1E5F9 /* ArukuSurroundUtilMEMEDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457B06D81BB19F6600E1E5F9 /* ArukuSurroundUtilMEMEDelegate.swift */; settings = {ASSET_TAGS = (); }; };
+		457B06DB1BB19F9600E1E5F9 /* ArukuSurroundSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457B06DA1BB19F9600E1E5F9 /* ArukuSurroundSetting.swift */; settings = {ASSET_TAGS = (); }; };
+		457B06DD1BB2611F00E1E5F9 /* BoccoAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457B06DC1BB2611F00E1E5F9 /* BoccoAPI.swift */; settings = {ASSET_TAGS = (); }; };
 		458023A11BACB0620008AB2E /* MEMELib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 458023A01BACB0620008AB2E /* MEMELib.framework */; settings = {ASSET_TAGS = (); }; };
 		458023A51BACB0A30008AB2E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 458023A41BACB0A30008AB2E /* CoreLocation.framework */; };
 		458023A71BAD133B0008AB2E /* MEMEController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458023A61BAD133B0008AB2E /* MEMEController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -90,6 +94,10 @@
 		457B06D01BB10DCE00E1E5F9 /* SoundEffectUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundEffectUtil.swift; sourceTree = "<group>"; };
 		457B06D21BB1102500E1E5F9 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		457B06D41BB148BC00E1E5F9 /* looking_around.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = looking_around.mp3; sourceTree = "<group>"; };
+		457B06D61BB153B000E1E5F9 /* speepy.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = speepy.mp3; sourceTree = "<group>"; };
+		457B06D81BB19F6600E1E5F9 /* ArukuSurroundUtilMEMEDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArukuSurroundUtilMEMEDelegate.swift; sourceTree = "<group>"; };
+		457B06DA1BB19F9600E1E5F9 /* ArukuSurroundSetting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArukuSurroundSetting.swift; sourceTree = "<group>"; };
+		457B06DC1BB2611F00E1E5F9 /* BoccoAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoccoAPI.swift; sourceTree = "<group>"; };
 		458023A01BACB0620008AB2E /* MEMELib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MEMELib.framework; sourceTree = "<group>"; };
 		458023A41BACB0A30008AB2E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		458023A61BAD133B0008AB2E /* MEMEController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MEMEController.swift; sourceTree = "<group>"; };
@@ -163,8 +171,10 @@
 				457B06A71BB10B5200E1E5F9 /* Resource */,
 				452F1EF61BAC4F1000261D97 /* Config.swift */,
 				452F1EF91BAC6A2A00261D97 /* ArukuSurroundUtil.swift */,
+				457B06D81BB19F6600E1E5F9 /* ArukuSurroundUtilMEMEDelegate.swift */,
 				458023A61BAD133B0008AB2E /* MEMEController.swift */,
 				457B06D01BB10DCE00E1E5F9 /* SoundEffectUtil.swift */,
+				457B06DC1BB2611F00E1E5F9 /* BoccoAPI.swift */,
 				4532283C1BAC49A800F999E1 /* AppDelegate.swift */,
 				4532283E1BAC49A800F999E1 /* ViewController.swift */,
 				453228401BAC49A800F999E1 /* Main.storyboard */,
@@ -172,6 +182,7 @@
 				453228451BAC49A800F999E1 /* LaunchScreen.storyboard */,
 				453228481BAC49A800F999E1 /* Info.plist */,
 				452F1EF51BAC4B9600261D97 /* ArukuSurround-Bridging-Header.h */,
+				457B06DA1BB19F9600E1E5F9 /* ArukuSurroundSetting.swift */,
 			);
 			path = ArukuSurround;
 			sourceTree = "<group>";
@@ -204,6 +215,7 @@
 				457B06B81BB10BB800E1E5F9 /* running.mp3 */,
 				457B06BB1BB10BB800E1E5F9 /* walking.mp3 */,
 				457B06D41BB148BC00E1E5F9 /* looking_around.mp3 */,
+				457B06D61BB153B000E1E5F9 /* speepy.mp3 */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -333,6 +345,7 @@
 				453228471BAC49A800F999E1 /* LaunchScreen.storyboard in Resources */,
 				453228441BAC49A800F999E1 /* Assets.xcassets in Resources */,
 				457B06C81BB10BB800E1E5F9 /* PixelMplus12-Bold.ttf in Resources */,
+				457B06D71BB153B000E1E5F9 /* speepy.mp3 in Resources */,
 				457B06CA1BB10BB800E1E5F9 /* poison.mp3 in Resources */,
 				457B06CC1BB10BB800E1E5F9 /* running.mp3 in Resources */,
 				453228421BAC49A800F999E1 /* Main.storyboard in Resources */,
@@ -398,10 +411,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				458023A71BAD133B0008AB2E /* MEMEController.swift in Sources */,
+				457B06D91BB19F6600E1E5F9 /* ArukuSurroundUtilMEMEDelegate.swift in Sources */,
 				4532283F1BAC49A800F999E1 /* ViewController.swift in Sources */,
 				4532283D1BAC49A800F999E1 /* AppDelegate.swift in Sources */,
 				452F1EFA1BAC6A2A00261D97 /* ArukuSurroundUtil.swift in Sources */,
+				457B06DB1BB19F9600E1E5F9 /* ArukuSurroundSetting.swift in Sources */,
 				457B06D11BB10DCE00E1E5F9 /* SoundEffectUtil.swift in Sources */,
+				457B06DD1BB2611F00E1E5F9 /* BoccoAPI.swift in Sources */,
 				452F1EF71BAC4F1000261D97 /* Config.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
