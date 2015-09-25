@@ -161,6 +161,13 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     func doWalking(log:ArukuSurroundWalkLog){
         //ステータス テキストを初期化
         txtStatus.text = createStatusText(log)
+        txtStatus.textColor = UIColor.whiteColor()
+        
+        //眠気が会った場合
+        if log.walkStatus == conditionSpeepy {
+            //テキストの色を 橙に変更
+            txtStatus.textColor = UIColor.orangeColor()
+        }
         
         currentWalkingLog = log
     }
@@ -170,13 +177,13 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     func createStatusText(log:ArukuSurroundWalkLog?) -> String {
         var lv:Int = 1
         var hp:Int = 100
-        var maxHp:Int = 100
+        let maxHp:Int = 100
         var status:String = "けんこう"
         var stepCount:Int = 0
         
         if log != nil {
             lv = log!.lv
-            hp = (log!.powerLeft.hashValue/5)*100
+            hp = (log!.powerLeft.hashValue/5)*maxHp
             if log!.walkStatus == conditionSpeepy {
                 status = "ねむい"
             }
@@ -187,6 +194,7 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
                             + "ＨＰ: \(hp)/\(maxHp)\n"
                             + "じょうたい: \(status)\n"
                             + "そうほすう: \(stepCount)ほ"
+        
         return result
     }
     

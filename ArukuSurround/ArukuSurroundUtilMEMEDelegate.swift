@@ -220,7 +220,7 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
         stepCount += 1
         
         //TODO: 歩数と時間等でLVを計算する
-        let lv:Int = stepCount/10
+        let lv:Int = stepCount/10 + 1
         
         //ログを作成
         let log = ArukuSurroundWalkLog()

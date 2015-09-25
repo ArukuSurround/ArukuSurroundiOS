@@ -251,20 +251,21 @@ class ArukuSurroundUtil:NSObject {
         log.user = NCMBUser.currentUser()
         
         if log.user != nil {
+            
+            let location:NCMBGeoPoint = NCMBGeoPoint.init(latitude: log.latitude, longitude: log.longitude)
+            
             //保存済みの場合は更新する
             let query:NCMBQuery = NCMBQuery.init(className: className)
             query.whereKey ("uuid",equalTo:log.uuid)
             query.whereKey ("user",equalTo:log.user)
-            query.whereKey ("latitude",equalTo:log.latitude)
-            query.whereKey ("longitude",equalTo:log.longitude)
+            query.whereKey ("location",equalTo:location)
             
             query.findObjectsInBackgroundWithBlock( { (NSArray objects, NSError error) in
                 if error == nil {
                     if objects.count > 0 {
                         //更新
                         let obj:NCMBObject = objects[0] as! NCMBObject
-                        //obj.setObject(log.latitude, forKey: "latitude")
-                        //obj.setObject(log.longitude, forKey: "longitude")
+                        //obj.setObject(location, forKey: "location")
                         obj.setObject(log.walkStatus, forKey: "walkStatus")
                         obj.setObject(log.stepCount, forKey: "stepCount")
                         obj.save(&saveError)
@@ -280,8 +281,7 @@ class ArukuSurroundUtil:NSObject {
                         let obj:NCMBObject = NCMBObject.init(className:className)
                         obj.setObject(log.uuid, forKey: "uuid")
                         obj.setObject(log.user, forKey: "user")
-                        obj.setObject(log.latitude, forKey: "latitude")
-                        obj.setObject(log.longitude, forKey: "longitude")
+                        obj.setObject(location, forKey: "location")
                         obj.setObject(log.walkStatus, forKey: "walkStatus")
                         obj.setObject(log.stepCount, forKey: "stepCount")
                         obj.save(&saveError)
@@ -361,6 +361,10 @@ class ArukuSurroundUtil:NSObject {
     */
     static func endWalk(){
         print("endWalk");
+        
+        //接続中のMEMEから切断
+        MEMEController.disconnectPeripheral()
+        
         // BOCCOにメッセージを送る為の処理をする
         // utilDelegate.saveLogUuid をキーに集計
         aggregateWalkLog(utilDelegate.saveLogUuid,callback: {(data) -> Void in

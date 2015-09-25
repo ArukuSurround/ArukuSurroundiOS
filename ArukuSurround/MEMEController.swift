@@ -93,6 +93,14 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
         MEMELib.sharedInstance().connectPeripheral(peripheral)
     }
     
+    
+    /** 接続中のMEMEから切断する
+    *
+    */
+    static func disconnectPeripheral(){
+        MEMELib.sharedInstance().disconnectPeripheral()
+    }
+    
     /** MEMEの取得モードを切り替え
     *
     */
