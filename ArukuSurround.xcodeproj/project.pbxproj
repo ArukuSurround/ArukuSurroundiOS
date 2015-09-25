@@ -34,6 +34,8 @@
 		458023A51BACB0A30008AB2E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 458023A41BACB0A30008AB2E /* CoreLocation.framework */; };
 		458023A71BAD133B0008AB2E /* MEMEController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458023A61BAD133B0008AB2E /* MEMEController.swift */; settings = {ASSET_TAGS = (); }; };
 		458023AA1BAD39CA0008AB2E /* MEMELib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 458023A01BACB0620008AB2E /* MEMELib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		45D320781BB3CBF6006B046C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D320771BB3CBF6006B046C /* MainViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		45D3207A1BB3D9AD006B046C /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D320791BB3D9AD006B046C /* SettingViewController.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +103,8 @@
 		458023A01BACB0620008AB2E /* MEMELib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MEMELib.framework; sourceTree = "<group>"; };
 		458023A41BACB0A30008AB2E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		458023A61BAD133B0008AB2E /* MEMEController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MEMEController.swift; sourceTree = "<group>"; };
+		45D320771BB3CBF6006B046C /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		45D320791BB3D9AD006B046C /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		5701DBFEAA4029089B1A8FB4 /* Pods-ArukuSurround.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ArukuSurround.release.xcconfig"; path = "Pods/Target Support Files/Pods-ArukuSurround/Pods-ArukuSurround.release.xcconfig"; sourceTree = "<group>"; };
 		811512405397845CFFE781ED /* libPods-ArukuSurround.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ArukuSurround.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -170,6 +174,7 @@
 			children = (
 				457B06A71BB10B5200E1E5F9 /* Resource */,
 				452F1EF61BAC4F1000261D97 /* Config.swift */,
+				457B06DA1BB19F9600E1E5F9 /* ArukuSurroundSetting.swift */,
 				452F1EF91BAC6A2A00261D97 /* ArukuSurroundUtil.swift */,
 				457B06D81BB19F6600E1E5F9 /* ArukuSurroundUtilMEMEDelegate.swift */,
 				458023A61BAD133B0008AB2E /* MEMEController.swift */,
@@ -177,12 +182,13 @@
 				457B06DC1BB2611F00E1E5F9 /* BoccoAPI.swift */,
 				4532283C1BAC49A800F999E1 /* AppDelegate.swift */,
 				4532283E1BAC49A800F999E1 /* ViewController.swift */,
+				45D320771BB3CBF6006B046C /* MainViewController.swift */,
+				45D320791BB3D9AD006B046C /* SettingViewController.swift */,
 				453228401BAC49A800F999E1 /* Main.storyboard */,
 				453228431BAC49A800F999E1 /* Assets.xcassets */,
 				453228451BAC49A800F999E1 /* LaunchScreen.storyboard */,
 				453228481BAC49A800F999E1 /* Info.plist */,
 				452F1EF51BAC4B9600261D97 /* ArukuSurround-Bridging-Header.h */,
-				457B06DA1BB19F9600E1E5F9 /* ArukuSurroundSetting.swift */,
 			);
 			path = ArukuSurround;
 			sourceTree = "<group>";
@@ -411,6 +417,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				458023A71BAD133B0008AB2E /* MEMEController.swift in Sources */,
+				45D3207A1BB3D9AD006B046C /* SettingViewController.swift in Sources */,
 				457B06D91BB19F6600E1E5F9 /* ArukuSurroundUtilMEMEDelegate.swift in Sources */,
 				4532283F1BAC49A800F999E1 /* ViewController.swift in Sources */,
 				4532283D1BAC49A800F999E1 /* AppDelegate.swift in Sources */,
@@ -419,6 +426,7 @@
 				457B06D11BB10DCE00E1E5F9 /* SoundEffectUtil.swift in Sources */,
 				457B06DD1BB2611F00E1E5F9 /* BoccoAPI.swift in Sources */,
 				452F1EF71BAC4F1000261D97 /* Config.swift in Sources */,
+				45D320781BB3CBF6006B046C /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

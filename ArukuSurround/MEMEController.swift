@@ -89,7 +89,7 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     *
     * @param peripheral 接続対象のJINS MEME
     */
-    func connectPeripheral(peripheral: CBPeripheral!){
+    static func connectPeripheral(peripheral: CBPeripheral!){
         MEMELib.sharedInstance().connectPeripheral(peripheral)
     }
     
@@ -117,7 +117,7 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     *
     */
     @objc func memePeripheralFound(peripheral: CBPeripheral!) {
-        print("peripheral found \(peripheral.identifier.UUIDString)")
+        //print("peripheral found \(peripheral.identifier.UUIDString)")
         
         if delegate != nil {
             delegate?.memePeripheralFound(peripheral)
@@ -180,7 +180,7 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
             delegate?.memeRealTimeModeDataReceived(data, currentLocation: currentLocation)
         }
     }
-        
+    
     /** MEME スタンダードモードのデータ受信
     *
     * @param data MEMEから取得したデータ
@@ -237,9 +237,6 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
         
         //位置情報取得に成功
         currentLocation = locations[ locations.count-1 ]
-        
-        //print("currentLocation:\(currentLocation)")
-        
     }
 }
 
@@ -268,7 +265,7 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     * @param peripheral 切断されたJINS MEME
     *
     */
-    func memePeripheralDisconneted(peripheral:CBPeripheral);
+    func memePeripheralDisconneted(peripheral:CBPeripheral)
     
     
     /** MEME リアルタイムモードのデータ受信

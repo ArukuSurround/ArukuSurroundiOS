@@ -10,6 +10,9 @@ import Foundation
 
 class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     
+    //JINS MEMEのイベントの通知先 ビュー
+    var viewMemeDelegate:ArukuSurroundMEMEControllerDelegate!
+    
     //セーブ毎に変更されるユニークキー
     var saveLogUuid:String!
     
@@ -46,6 +49,9 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     //各種設定をロードして保持する
     var setting:ArukuSurroundSetting!
     
+    // 接続中のJINS MEME
+    var currentPeripheral:CBPeripheral! = nil
+    
     /** 各カウンターをリセットする
     *
     */
@@ -65,13 +71,18 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     */
     @objc func memePeripheralFound(peripheral: CBPeripheral!){
         print("memePeripheralFound \(peripheral)")
-        //TODO: UUID決め打ちでつなぐ
-        //TODO: 一度でも繋いだ事があると 勝手に繋がる...。(この仕様はバグの原因じゃないかなー
-        /*
-        if peripheral.identifier.UUIDString == MEME_DEVICE_UUID {
-        MEMEController.connectPeripheral(peripheral);
+        
+        if peripheral.state == .Disconnected {
+            //UUID決め打ちでつなぐ
+            //TODO: 一度でも繋いだ事があると 勝手に繋がる...。(この仕様はバグの原因じゃないかなー
+            if peripheral.identifier.UUIDString == setting.jins_meme_device_uuid {
+                MEMEController.connectPeripheral( peripheral );
+            }
         }
-        */
+        
+        if viewMemeDelegate != nil {
+            viewMemeDelegate?.memePeripheralFound(peripheral)
+        }
     }
     
     /** JINS MEMEへの接続完了
@@ -82,7 +93,11 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     @objc func memePeripheralConnected(peripheral:CBPeripheral){
         print("memePeripheralConnected \(peripheral)")
         //接続成功した MEMEを設定する
-        ArukuSurroundUtil.currentPeripheral = peripheral;
+        currentPeripheral = peripheral
+
+        if viewMemeDelegate != nil {
+            viewMemeDelegate?.memePeripheralConnected(peripheral)
+        }
     }
     
     /** JINS MEMEとの切断を受け取る
@@ -93,7 +108,12 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     @objc func memePeripheralDisconneted(peripheral:CBPeripheral){
         print("memePeripheralDisconneted \(peripheral)")
         //切断したので 初期化
-        ArukuSurroundUtil.currentPeripheral = nil
+        currentPeripheral = nil
+
+        
+        if viewMemeDelegate != nil {
+            viewMemeDelegate?.memePeripheralDisconneted(peripheral)
+        }
     }
     
     /** MEME リアルタイムモードのデータ受信
@@ -106,6 +126,11 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
         //print("memeRealTimeModeDataReceived \(data)")
         
         doWalking(data,currentLocation: currentLocation)
+        
+        
+        if viewMemeDelegate != nil {
+            viewMemeDelegate?.memeRealTimeModeDataReceived(data, currentLocation: currentLocation)
+        }
     }
     
     
@@ -194,6 +219,9 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
         //歩数を加算
         stepCount += 1
         
+        //TODO: 歩数と時間等でLVを計算する
+        let lv:Int = stepCount/10
+        
         //ログを作成
         let log = ArukuSurroundWalkLog()
         log.uuid = saveLogUuid;
@@ -201,9 +229,16 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
         log.longitude = currentLocation.coordinate.longitude
         log.walkStatus = currentCondition.hashValue
         log.stepCount = stepCount
+        log.lv = lv
+        log.powerLeft = data.powerLeft
         
         //ログをサーバに送信して保存
         ArukuSurroundUtil.saveWalkLog(log)
+        
+        //デリゲートに通知
+        if viewMemeDelegate != nil {
+            viewMemeDelegate.doWalking(log)
+        }
         
         //音の処理をしたので 初期値に戻す
         currentCondition = .Walking
@@ -223,5 +258,61 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
             //MEME_FCS_VERY : 大変眠い
             currentCondition = .Speepy
         }
+        
+        if viewMemeDelegate != nil {
+            viewMemeDelegate?.memeStandardModeDataReceived(data, currentLocation: currentLocation)
+        }
+        
     }
+}
+
+/** ArukuSurround MEMEController デリゲート
+*
+*/
+protocol ArukuSurroundMEMEControllerDelegate {
+    
+    /** スキャン結果受信デリゲート
+    *
+    * @param peripheral スキャンされたJINS MEME
+    *
+    */
+    func memePeripheralFound(peripheral: CBPeripheral!)
+    
+    
+    /** JINS MEMEへの接続完了
+    *
+    * @param peripheral 接続されたJINS MEME
+    *
+    */
+    func memePeripheralConnected(peripheral:CBPeripheral)
+    
+    /** JINS MEMEとの切断を受け取る
+    *
+    * @param peripheral 切断されたJINS MEME
+    *
+    */
+    func memePeripheralDisconneted(peripheral:CBPeripheral)
+    
+    
+    /** MEME リアルタイムモードのデータ受信
+    *
+    * @param data MEMEから取得したデータ
+    *
+    */
+    func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation: CLLocation!)
+    
+    
+    /** MEME スタンダードモードのデータ受信
+    *
+    * @param data MEMEから取得したデータ
+    *
+    */
+    func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation: CLLocation!)
+    
+    /** 歩行ログの通知
+    *
+    * @param log MEMEから取得したデータを元に作成したログ
+    *
+    */
+   func doWalking(log:ArukuSurroundWalkLog)
 }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 /** ArukuSurround に関する処理を纏めたクラス
 *
@@ -20,10 +21,7 @@ class ArukuSurroundUtil:NSObject {
     
     //JINS MEMEをコントロールするクラス
     static var memeController:MEMEController!
-    
-    // 接続中のJINS MEME
-    static var currentPeripheral:CBPeripheral! = nil
-    
+        
     /** イニシャライザ
     *
     */
@@ -53,9 +51,6 @@ class ArukuSurroundUtil:NSObject {
         //Twitterログインの為の初期化
         NCMBTwitterUtils.initializeWithConsumerKey(Config.TWITTER_API_KEY, consumerSecret: Config.TWITTER_API_SECRET)
         
-        //匿名ユーザー作成
-        ArukuSurroundUtil.createAnonymousUser()
-        
         //MEMEをコントロールするクラス
         utilDelegate = ArukuSurroundUtilMEMEDelegate();
         utilDelegate.setting = setting;
@@ -65,49 +60,49 @@ class ArukuSurroundUtil:NSObject {
         memeController = MEMEController()
         memeController?.delegate = utilDelegate;
     }
-    
-    /** 匿名ユーザー作成
-    *
-    */
-    static func createAnonymousUser(){
-        let user:NCMBUser? = NCMBUser.currentUser()
-        if user != nil {
-            //print("ログイン中: \(user)")
-        }
-        else {
-            //print("ログインしていない")
-            //匿名ユーザー登録
-            NCMBAnonymousUtils.logInWithBlock({ (NCMBUser user, NSError error) -> Void in
-                if error == nil {
-                    //print("user\(user)")
-                }
-                else{
-                    //print("error\(error)")
-                }
-            })
-        }
-    }
-    
+        
     /** Twitterアカウントでログイン
     *
     * @param callback ログイン結果を通知するBlocks
     *
     */
-    static func loginTwitter(callback: ((user:NCMBUser?,error:NSError?)->Void)){        
+    static func loginTwitter(callback: ((user:NCMBUser?,error:NSError?)->Void)){
+        print("loginTwitter")
         //Twitterでログイン処理をする
         NCMBTwitterUtils.logInWithBlock({(user: NCMBUser!, error: NSError!) -> Void in
-            if let u = user {
-                if u.isNew {
-                    //print("Twitterで登録成功")
-                    callback(user:u,error:nil)
-                }
-                else{
-                    //print("Twitterでログイン成功!")
-                    callback(user:u,error:nil)
-                }
+            if let u = user {                
+                //ログイン中 なので 設定値をロードする
+                loadSetting({ (setting, error) -> Void in
+                    if u.isNew {
+                        print("Twitterで登録成功")
+                    }
+                    
+                    self.setting = setting;
+                    self.utilDelegate?.setting = setting;
+                    
+                    //ログイン中のユーザーを取得
+                    let currentUser:NCMBUser? = NCMBUser.currentUser()
+                    if NCMBTwitterUtils.isLinkedWithUser(currentUser) == true {
+                        //Twitterアカウントの関連付け済み
+                        callback(user:currentUser,error:nil)
+                    }
+                    else{
+                        NCMBTwitterUtils.linkUser(currentUser, block: { (error) -> Void in
+                            print("linkUser error:\(error)")
+                            if NCMBTwitterUtils.isLinkedWithUser(currentUser) {
+                                //Twitterアカウントの関連付け成功
+                                callback(user:currentUser,error:nil)
+                            }
+                            else{
+                                //失敗
+                                callback(user:nil,error:error)
+                            }
+                        })
+                    }
+                })
             }
             else {
-                //print("Twitterログインがキャンセルされた.")
+                print("Twitterログインがキャンセルされた.")
                 callback(user:nil,error:error)
             }
         })
@@ -117,19 +112,31 @@ class ArukuSurroundUtil:NSObject {
     *
     */
     static func isLogin(callback: ((user:NCMBUser?)->Void)){
+        print("isLogin")
+        
         //ログイン中のユーザーを取得
         let currentUser:NCMBUser? = NCMBUser.currentUser()
         if currentUser != nil {
-            //ログイン中
-            //設定値をロードする
-            loadSetting({ (setting, error) -> Void in
-                self.setting = setting;
-                self.utilDelegate?.setting = setting;
-                
-                print("loadSetting:\(setting)")
-            })
+            //匿名ユーザーは設定済み
+            //Twitter連動しているか確認する
+            let isLinked:Bool = NCMBTwitterUtils.isLinkedWithUser(currentUser)
+            print("isLinked:\(isLinked)")
             
-            callback(user:currentUser)
+            if isLinked == true {
+                //ログイン中 なので 設定値をロードする
+                loadSetting({ (setting, error) -> Void in
+                
+                    self.setting = setting;
+                    self.utilDelegate?.setting = setting;
+                
+                    //ロードに成功してからコールバック
+                    callback(user:currentUser)
+                })
+            }
+            else{
+                //Twitterと未連動なので 未ログイン扱い
+                callback(user:nil)
+            }
         }
         else{
             //ログインしてなかった場合
@@ -154,7 +161,7 @@ class ArukuSurroundUtil:NSObject {
     /** 各設定値の保存
     *
     */
-    static func saveSetting(setting:ArukuSurroundSetting){
+    static func saveSetting(setting:ArukuSurroundSetting, callback:((error:NSError?)->Void)){
         let className = "Setting"
         var saveError:NSError?
 
@@ -176,9 +183,12 @@ class ArukuSurroundUtil:NSObject {
                         obj.save(&saveError)
                         if saveError == nil {
                             print("[UPDATE] Done")
+                            callback(error:nil)
                         }
                         else {
                             print("[UPDATE-ERROR] \(saveError)");
+                            
+                            callback(error:saveError)
                         }
                     }
                     else{
@@ -191,9 +201,11 @@ class ArukuSurroundUtil:NSObject {
                         obj.save(&saveError)
                         if saveError == nil {
                             print("[SAVE] Done")
+                            callback(error:nil)
                         }
                         else {
                             print("[SAVE-ERROR] \(saveError)");
+                            callback(error:saveError)
                         }
                     }
                 }
@@ -209,18 +221,24 @@ class ArukuSurroundUtil:NSObject {
     */
     static func loadSetting(callback: ((setting:ArukuSurroundSetting?,error:NSError?)->Void)){
         let className = "Setting"
-
         let currentUser:NCMBUser = NCMBUser.currentUser()
         
         let query:NCMBQuery = NCMBQuery.init(className: className)
         query.whereKey ("user",equalTo:currentUser)
         query.findObjectsInBackgroundWithBlock( { (NSArray objects, NSError error) in
             
-            let obj:NCMBObject = objects[0] as! NCMBObject
-            let s:ArukuSurroundSetting = ArukuSurroundSetting(object: obj)
+            if error == nil && objects != nil && objects.count > 0 {
+                let obj:NCMBObject = objects[0] as! NCMBObject
+                let s:ArukuSurroundSetting = ArukuSurroundSetting(object: obj)
             
-            //検索結果をコールバックする
-            callback(setting:s, error: error)
+                //検索結果をコールバックする
+                callback(setting:s, error: nil)
+            }
+            else{
+                //エラー
+                callback(setting:nil, error: error)
+            }
+            
         })
     }
     
@@ -323,25 +341,19 @@ class ArukuSurroundUtil:NSObject {
         })
     }
     
-    /** JINS MEME の 検索 & 接続
-    *
-    */
-    static func startScanningMeme(){
-        print("startScanningMeme");
-        memeController?.startScanningMeme();
-    }
-    
-    
     /** 歩くの処理を開始
     *
     */
-    static func startWalk(){
+    static func startWalk(viewMemeDelegate:ArukuSurroundMEMEControllerDelegate){
         print("startWalk");
         //セーブ毎に変更する UUIDを設定する
         utilDelegate.saveLogUuid = NSUUID().UUIDString
         
+        //JINS MEMEのイベントを受け取るビューを設定
+        utilDelegate?.viewMemeDelegate = viewMemeDelegate
+        
         //JINS MEME の 検索 & 接続
-        startScanningMeme()
+        memeController?.startScanningMeme()
     }
 
     /** 歩く処理を終了
@@ -365,6 +377,57 @@ class ArukuSurroundUtil:NSObject {
             })
         })
     }
+    
+    
+    /** アラートを表示
+    *
+    * @param title アラートのタイトル
+    * @param message アラートのメッセージ
+    * @param btnTitle ボタンのタイトル
+    * @param callback OKを押した結果のコールバック
+    *
+    */
+    static func showAlert(vc:UIViewController,title:String,message:String,btnTitle:String,callback:(()-> Void)){
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        
+        let otherAction = UIAlertAction(title: btnTitle, style: .Default) {
+            action in
+            callback()
+        }
+        alertController.addAction(otherAction)
+        
+        vc.presentViewController(alertController, animated: true, completion: nil)
+    }
+    
+    /** 確認アラートを表示
+    *
+    * @param title アラートのタイトル
+    * @param message アラートのメッセージ
+    * @param btnCancelTitle キャンセルボタンのタイトル
+    * @param cancelCallback キャンセルを押した結果のコールバック
+    * @param btnOkTitle OKボタンのタイトル
+    * @param OkCallback OKを押した結果のコールバック
+    *
+    */
+    static func showConfirm(vc:UIViewController,title:String,message:String,btnCancelTitle:String,cancelCallback:(()-> Void),btnOkTitle:String,okCallback:(()-> Void)){
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        
+        //Cancelボタン設定
+        let cancelAction = UIAlertAction(title: btnCancelTitle, style: .Default) {
+            action in
+            cancelCallback()
+        }
+        alertController.addAction(cancelAction)
+        
+        //Okボタン設定
+        let okAction = UIAlertAction(title: btnOkTitle, style: .Default) {
+            action in
+            okCallback()
+        }
+        alertController.addAction(okAction)
+        
+        vc.presentViewController(alertController, animated: true, completion: nil)
+    }
 }
 
 
@@ -380,16 +443,22 @@ class ArukuSurroundWalkLog {
     var user:NCMBUser!
     
     //緯度
-    var latitude:Double?
+    var latitude:Double!
     
     //緯度
-    var longitude:Double?
+    var longitude:Double!
     
     //歩行ステータス
-    var walkStatus:Int?
+    var walkStatus:Int!
     
     //歩数
-    var stepCount:Int?
+    var stepCount:Int!
+    
+    //LV
+    var lv:Int!
+    
+    //MEMEの電池残量
+    var powerLeft:UInt8!
     
     //TODO: MEMEからの生データを保存すると詳細ログを解析できる
 }

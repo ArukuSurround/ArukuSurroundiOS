@@ -22,7 +22,7 @@ public class BoccoAPI {
     static func getMessages(room_id:String,access_token:String, callback:(NSArray)->Void){
     
         let url:String = (API_HOST_URL+"?access_token="+access_token).stringByReplacingOccurrencesOfString("{room_id}", withString: room_id)
-        print("url:\(url)")
+        //print("url:\(url)")
         
         let request = NSMutableURLRequest(URL: NSURL(string: url)!)
         request.HTTPMethod = "GET"

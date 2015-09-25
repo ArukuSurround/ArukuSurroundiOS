@@ -19,6 +19,8 @@ public class Config {
     //nifty mBaaS クライアントキー
     public static var NCMB_CLIENT_KEY:String = "e5f532f3bd87db183da303248e9ddcf652f847b19f2fcb837acaa5082a9b825d"
     
+    //nifty mBaaS 公開ファイル取得API
+    public static var NCMB_PBLIC_FILE_API_HOST = "https://mb.api.cloud.nifty.com/2013-09-01/applications/TC6ruxnBKRRj69gW/publicFiles"
     
     //Twitter連動 Consumer Key
     public static var TWITTER_API_KEY:String = "cOSab8VvEkifRFiDgb1EyzykA"
