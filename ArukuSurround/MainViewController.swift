@@ -80,11 +80,18 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
         super.viewWillAppear(animated)
         
         //背景にMAPを表示する
-        let request = NSURLRequest(URL: NSURL(string: "\(Config.NCMB_PBLIC_FILE_API_HOST)/index.html")!)
+        reloadMap( ArukuSurroundUtil.utilDelegate.saveLogUuid )
+    }
+
+    /** MAPをリロードする
+    *
+    */
+    func reloadMap(uuid:String){
+        let request = NSURLRequest(URL: NSURL(string: "\(Config.NCMB_PBLIC_FILE_API_HOST)/index.html#\(uuid)")!)
         self.viewWebMap.loadRequest(request)
         self.view.sendSubviewToBack(self.viewWebMap)
     }
-
+    
     /** 設定ボタンが押された時
     *
     */
@@ -102,6 +109,9 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
         txtStatus.text = createStatusText(nil)
         
         ArukuSurroundUtil.startWalk( self )
+        
+        //背景にMAPを表示する
+        reloadMap( ArukuSurroundUtil.utilDelegate.saveLogUuid )
         
         //STARTボタンを 非表示にする
         btnStart.hidden = true
