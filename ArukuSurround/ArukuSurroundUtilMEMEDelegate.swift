@@ -17,7 +17,7 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     var saveLogUuid:String!
     
     //歩行中ステータス列挙型
-    enum Condition {
+    enum Condition:Int {
         case Walking //歩行
         case Running //走っている
         case BadPosture //姿勢が悪い
@@ -92,6 +92,10 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     */
     @objc func memePeripheralConnected(peripheral:CBPeripheral){
         print("memePeripheralConnected \(peripheral)")
+        
+        //接続時は初期値にリセットする
+        reset()
+        
         //接続成功した MEMEを設定する
         currentPeripheral = peripheral
 

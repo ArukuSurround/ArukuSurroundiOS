@@ -317,23 +317,55 @@ class ArukuSurroundUtil:NSObject {
         query.orderByDescending("stepCount")
         query.findObjectsInBackgroundWithBlock( { (NSArray objects, NSError error) in
             if error == nil {
+                //歩いた歩数
+                var stepCount:Int = 0;
+                //走ったトータル時間
+                var runningCount:Int = 0
+                //姿勢が悪かったトータル時間
+                var badPostureCount:Int = 0
+                //キョロキョロした時間
+                var lookingAroundCount:Int = 0
+                //眠気のあったトータル時間
+                var speepyCount:Int = 0
+                
                 if objects.count > 0 {
                     //歩いた歩数
                     let obj:NCMBObject = objects[0] as! NCMBObject
-                    let stepCount:Int = obj.objectForKey("stepCount") as! Int
-                    //print("stepCount:\(stepCount)");
+                    stepCount = obj.objectForKey("stepCount") as! Int
                     
-                    //TOTO: 走ったトータル時間
-                    //TOTO: 姿勢が悪かったトータル時間
-                    //TODO: 眠気のあったトータル時間
-                    
-                    //集計結果をコールバックする
-                    let data:NSDictionary = ["stepCount":stepCount]
-                    callback(data:data)
+                    for element in objects {
+                        print("element:\(element)")
+                        let i:Int = element.objectForKey("walkStatus") as! Int
+                        let walkStatus:ArukuSurroundUtilMEMEDelegate.Condition = ArukuSurroundUtilMEMEDelegate.Condition(rawValue: i)!
+                        //TODO:時間を取得して集計したい
+                        switch walkStatus {
+                        case .Walking:
+                            break
+                        case .Running:
+                            runningCount++
+                            break
+                        case .BadPosture:
+                            badPostureCount++
+                            break
+                        case .LookingAround:
+                            lookingAroundCount++
+                            break
+                        case .Speepy:
+                            speepyCount++
+                            break
+                        }
+                    }
                 }
-                else{
-                    //集計対象のレコードが無かった
-                }
+                
+                //集計結果をコールバックする
+                let data:NSDictionary = ["stepCount":stepCount,
+                    "runningCount":runningCount,
+                    "lookingAroundCount":lookingAroundCount,
+                    "speepyCount":speepyCount,
+                    "badPostureCount":badPostureCount]
+                
+                print("data:\(data)")
+                callback(data:data)
             }
             else{
                print("[QUERY-ERROR] \(error)");
@@ -371,9 +403,34 @@ class ArukuSurroundUtil:NSObject {
             //サーバ側で現在までの歩数やステータスを取得 集計
             
             let stepCount:Int = data.objectForKey("stepCount") as! Int
+            let runningCount:Int = data.objectForKey("runningCount") as! Int
+            let lookingAroundCount:Int = data.objectForKey("lookingAroundCount") as! Int
+            let speepyCount:Int = data.objectForKey("speepyCount") as! Int
+            let badPostureCount:Int = data.objectForKey("badPostureCount") as! Int
             
-            //TODO: 集計結果にあったメッセージをBOCCOに送る
-            let text:String = "今回の歩数は \(stepCount)歩でした。次回もがんばって!"
+            //集計結果にあったメッセージをBOCCOに送る
+            var text:String = Config.SAVE_MESSAGES["DEFAULT"]!
+            if stepCount > 50 {
+                //100歩 以上歩いた場合
+                text = Config.SAVE_MESSAGES["PRAISE"]!
+            }
+            else if runningCount > 20 {
+                //走り過ぎた場合
+                text = Config.SAVE_MESSAGES["RUNNING"]!
+            }
+            else if lookingAroundCount > 20 {
+                //キョロキョロしすぎた場合
+                text = Config.SAVE_MESSAGES["LOOKING_AROUND"]!
+            }
+            if badPostureCount > 20 {
+                //姿勢がわるいまま 歩いた場合
+                text = Config.SAVE_MESSAGES["BAD_POSTURE"]!
+            }
+            if speepyCount > 0 {
+                //一度でも眠かったら
+                text = Config.SAVE_MESSAGES["SLEEP"]!
+            }
+            text = text.stringByReplacingOccurrencesOfString("{STEP_COUNT}", withString:"\(stepCount)")
             
             BoccoAPI.postMessageText( setting.bocco_room_id!, access_token: setting.bocco_access_token!, text: text,
                 callback: { (result) -> Void in

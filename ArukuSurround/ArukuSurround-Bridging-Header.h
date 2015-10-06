@@ -15,4 +15,7 @@
 //JINS MEME SDK
 #import <MEMELib/MEMELib.h>
 
+//HVC-C1B SDK
+#import "./HVC-C1B-SDK/HVC_BLE.h"
+
 #endif /* ArukuSurround_Bridging_Header_h */

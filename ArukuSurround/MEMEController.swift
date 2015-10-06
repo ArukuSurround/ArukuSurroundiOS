@@ -90,6 +90,7 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     * @param peripheral 接続対象のJINS MEME
     */
     static func connectPeripheral(peripheral: CBPeripheral!){
+        print("MEMEController.connectPeripheral")
         MEMELib.sharedInstance().connectPeripheral(peripheral)
     }
     

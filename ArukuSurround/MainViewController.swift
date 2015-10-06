@@ -28,7 +28,7 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     var currentWalkingLog:ArukuSurroundWalkLog!
     
     //設定ボタン
-    //var btnSetting: UIBarButtonItem!
+    var btnSetting: UIBarButtonItem!
     
     //歩きアニメーションの為の値
     enum Step {
@@ -45,8 +45,10 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
         super.viewDidLoad()
         
         // 設定ボタンを設置
-        //btnSetting = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "clickBtnSetting")
-        //self.navigationItem.rightBarButtonItem = btnSetting
+        btnSetting = UIBarButtonItem(title: "⚙", style: UIBarButtonItemStyle.Plain, target: self, action: "clickBtnSetting:")
+        let font = UIFont(name: "PixelMplus12", size: 30)
+        btnSetting.setTitleTextAttributes([NSFontAttributeName:font!], forState: UIControlState.Normal)
+        self.navigationItem.rightBarButtonItem = btnSetting
         
         //ステータス テキストを初期化
         txtStatus.text = createStatusText(nil)

@@ -33,4 +33,13 @@ public class Config {
     
     //JINS MEME APP SECRET
     public static let MEME_APP_SECRET:String = "v5iqgzt4cj7sb8e6o0yoah0jxsduh76j"
+    
+    //SAVE メッセージ パターン
+    public static let SAVE_MESSAGES:[String:String] = ["BAD":"{STEP_COUNT}歩 とは情けない...。",
+                                                       "DEFAULT":"{STEP_COUNT}歩 でした。次回もがんばって!",
+                                                       "PRAISE":"{STEP_COUNT}歩 でした。沢山歩いて凄いです！",
+                                                       "RUNNING":"急いでどこかへお出かけですか？。事故には気をつけて。",
+                                                       "LOOKING_AROUND":"キョロキョロしすぎだったようです。気をつけて。",
+                                                       "BAD_POSTURE":"下を向いて歩くと気分が滅入りますよ...元気だしてください。",
+                                                       "SLEEP":"お疲れのようですね...。休む事も大切ですよ!"]
 }
