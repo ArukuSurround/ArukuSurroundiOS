@@ -13,6 +13,9 @@ import UIKit
 *
 */
 class ArukuSurroundUtil:NSObject {
+    //デモ モードの設定
+    internal static var MODE_DEMO:Bool = false
+    
     //MMEMの状態通知デリゲート
     static var utilDelegate:ArukuSurroundUtilMEMEDelegate!
     
@@ -334,7 +337,7 @@ class ArukuSurroundUtil:NSObject {
                     stepCount = obj.objectForKey("stepCount") as! Int
                     
                     for element in objects {
-                        print("element:\(element)")
+                        //print("element:\(element)")
                         let i:Int = element.objectForKey("walkStatus") as! Int
                         let walkStatus:ArukuSurroundUtilMEMEDelegate.Condition = ArukuSurroundUtilMEMEDelegate.Condition(rawValue: i)!
                         //TODO:時間を取得して集計したい
@@ -357,6 +360,8 @@ class ArukuSurroundUtil:NSObject {
                     }
                 }
                 
+                //TODO: サーバへアクセスして周辺のイベントを取得する
+                
                 //集計結果をコールバックする
                 let data:NSDictionary = ["stepCount":stepCount,
                     "runningCount":runningCount,
@@ -376,8 +381,12 @@ class ArukuSurroundUtil:NSObject {
     /** 歩くの処理を開始
     *
     */
-    static func startWalk(viewMemeDelegate:ArukuSurroundMEMEControllerDelegate){
+    static func startWalk(viewMemeDelegate:ArukuSurroundMEMEControllerDelegate,mode:Bool){
         print("startWalk");
+        
+        //デモモード設定
+        self.MODE_DEMO = mode
+        
         //セーブ毎に変更する UUIDを設定する
         utilDelegate.saveLogUuid = NSUUID().UUIDString
         
@@ -388,14 +397,19 @@ class ArukuSurroundUtil:NSObject {
         memeController?.startScanningMeme()
     }
 
+    //接続中のMEMEから切断
+    static func memeDisconnect() {
+        MEMEController.disconnectPeripheral()
+    }
+    
     /** 歩く処理を終了
     *
     */
-    static func endWalk(){
+    static func endWalk(callback:(()->Void)){
         print("endWalk");
         
         //接続中のMEMEから切断
-        MEMEController.disconnectPeripheral()
+        memeDisconnect()
         
         // BOCCOにメッセージを送る為の処理をする
         // utilDelegate.saveLogUuid をキーに集計
@@ -409,32 +423,40 @@ class ArukuSurroundUtil:NSObject {
             let badPostureCount:Int = data.objectForKey("badPostureCount") as! Int
             
             //集計結果にあったメッセージをBOCCOに送る
-            var text:String = Config.SAVE_MESSAGES["DEFAULT"]!
-            if stepCount > 50 {
-                //100歩 以上歩いた場合
-                text = Config.SAVE_MESSAGES["PRAISE"]!
-            }
-            else if runningCount > 20 {
+            var text:String = ""
+            if text.characters.count == 0 && runningCount > Config.STEP_COUNT_THRESHOLD {
                 //走り過ぎた場合
                 text = Config.SAVE_MESSAGES["RUNNING"]!
             }
-            else if lookingAroundCount > 20 {
+            if text.characters.count == 0 && lookingAroundCount >  Config.STEP_COUNT_THRESHOLD {
                 //キョロキョロしすぎた場合
                 text = Config.SAVE_MESSAGES["LOOKING_AROUND"]!
             }
-            if badPostureCount > 20 {
+
+            if text.characters.count == 0 && badPostureCount >  Config.STEP_COUNT_THRESHOLD {
                 //姿勢がわるいまま 歩いた場合
                 text = Config.SAVE_MESSAGES["BAD_POSTURE"]!
             }
-            if speepyCount > 0 {
+            if text.characters.count == 0 && speepyCount > 0 {
                 //一度でも眠かったら
                 text = Config.SAVE_MESSAGES["SLEEP"]!
             }
+            
+            //メッセージ未設定なら デフォルト
+            if text.characters.count == 0 {
+                text = Config.SAVE_MESSAGES["DEFAULT"]!
+                if stepCount > 100 {
+                    //100歩 以上歩いた場合
+                    text = Config.SAVE_MESSAGES["PRAISE"]!
+                }
+            }
+            
             text = text.stringByReplacingOccurrencesOfString("{STEP_COUNT}", withString:"\(stepCount)")
             
             BoccoAPI.postMessageText( setting.bocco_room_id!, access_token: setting.bocco_access_token!, text: text,
                 callback: { (result) -> Void in
-                
+                    //保存結果を通知
+                    callback()
             })
         })
     }
@@ -522,4 +544,27 @@ class ArukuSurroundWalkLog {
     var powerLeft:UInt8!
     
     //TODO: MEMEからの生データを保存すると詳細ログを解析できる
+}
+
+/** 歩行中マップイベント
+*  TODO:
+*/
+class ArukuSurroundWalkMapEvent {
+    //イベント識別
+    var uuid:String!
+    
+    //イベント タイプ
+    var type:UInt8!
+    
+    //緯度
+    var latitude:Double!
+    
+    //緯度
+    var longitude:Double!
+    
+    //イベント タイトル
+    var title:String!
+    
+    //イベント 内容テキスト
+    var detail:String!
 }

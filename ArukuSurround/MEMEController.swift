@@ -23,6 +23,9 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     //最後に更新された位置情報
     var currentLocation: CLLocation?
     
+    //最後に更新された 方位情報
+    var currentHeading:CLHeading?
+    
     /** イニシャライザ
     *
     */
@@ -71,12 +74,19 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
         case .NotDetermined:
             if locationManager.respondsToSelector("requestWhenInUseAuthorization"){
                 locationManager.requestWhenInUseAuthorization()
-            }else{
+            }
+            else{
+                //位置情報取得 開始
                 locationManager.startUpdatingLocation()
+                //方位取得 開始
+                locationManager.startUpdatingHeading()
             }
             break
         case .AuthorizedWhenInUse, .AuthorizedAlways:
+            //位置情報取得 開始
             locationManager.startUpdatingLocation()
+            //方位取得 開始
+            locationManager.startUpdatingHeading()
             break
         case .Restricted, .Denied:
             break
@@ -186,7 +196,7 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
         
         //デリゲートに通知
         if delegate != nil {
-            delegate?.memeRealTimeModeDataReceived(data, currentLocation: currentLocation)
+            delegate?.memeRealTimeModeDataReceived(data, currentLocation:currentLocation, currentHeading:currentHeading)
         }
     }
     
@@ -208,7 +218,7 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
         
         //デリゲートに通知
         if delegate != nil {
-            delegate?.memeStandardModeDataReceived(data, currentLocation: currentLocation)
+            delegate?.memeStandardModeDataReceived(data, currentLocation:currentLocation, currentHeading:currentHeading)
         }
         
         //MEMELibをリアルタイムモードに設定
@@ -228,7 +238,10 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
             case .Restricted, .Denied:
                 manager.stopUpdatingLocation()
             case .AuthorizedWhenInUse, .AuthorizedAlways:
+                //位置情報取得 開始
                 locationManager.startUpdatingLocation()
+                //方位取得 開始
+                locationManager.startUpdatingHeading()
             default:
                 break
         }
@@ -246,6 +259,13 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
         
         //位置情報取得に成功
         currentLocation = locations[ locations.count-1 ]
+    }
+    
+    /** 方位の取得に成功
+    */
+    @objc func locationManager(manager: CLLocationManager, didUpdateHeading newHeading:CLHeading) {
+        //print("didUpdateHeading \(newHeading)")
+        currentHeading = newHeading
     }
 }
 
@@ -282,7 +302,7 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     * @param data MEMEから取得したデータ
     *
     */
-    func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation: CLLocation!)
+    func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation:CLLocation!,currentHeading:CLHeading!)
     
     
     /** MEME スタンダードモードのデータ受信
@@ -290,5 +310,5 @@ class MEMEController:NSObject, MEMELibDelegate, CLLocationManagerDelegate {
     * @param data MEMEから取得したデータ
     *
     */
-    func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation: CLLocation!)
+    func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation:CLLocation!,currentHeading:CLHeading!)
 }

@@ -108,6 +108,7 @@ class SettingViewController: UIViewController {
         ArukuSurroundUtil.setting.bocco_access_token = txtBoccoAccessToken.text
         ArukuSurroundUtil.setting.jins_meme_device_uuid = txtJinsMemeDeviceUUID.text
         
+        
         //保存
         ArukuSurroundUtil.saveSetting(ArukuSurroundUtil.setting, callback:{ (error) -> Void in
             callback(error:error)

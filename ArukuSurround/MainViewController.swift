@@ -23,6 +23,9 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     
     //開始ボタン
     @IBOutlet weak var btnStart: UIButton!
+
+    //デモボタン
+    @IBOutlet weak var btnDemoStart: UIButton!
     
     //最後の歩行ログ
     var currentWalkingLog:ArukuSurroundWalkLog!
@@ -40,6 +43,9 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     
     //ステータス異常 眠気
     let conditionSpeepy = ArukuSurroundUtilMEMEDelegate.Condition.Speepy.hashValue
+    
+    //MAPをロードしたか確認
+    var isLoadMap:Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,14 +88,17 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
         super.viewWillAppear(animated)
         
         //背景にMAPを表示する
-        reloadMap( ArukuSurroundUtil.utilDelegate.saveLogUuid )
+        self.reloadMap( ArukuSurroundUtil.utilDelegate.saveLogUuid )
     }
 
     /** MAPをリロードする
     *
     */
     func reloadMap(uuid:String){
-        let request = NSURLRequest(URL: NSURL(string: "\(Config.NCMB_PBLIC_FILE_API_HOST)/index.html#\(uuid)")!)
+        let t = NSDate().timeIntervalSince1970
+        let request = NSURLRequest(URL: NSURL(string: "\(Config.NCMB_PBLIC_FILE_API_HOST)/index.html?t=\(t)#\(uuid)")!)
+        print("request:\(request)")
+        
         self.viewWebMap.loadRequest(request)
         self.view.sendSubviewToBack(self.viewWebMap)
     }
@@ -107,26 +116,59 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     *
     */
     @IBAction func clickBtnStartWalk(sender: AnyObject) {
+        //SVProgressHUD.showWithStatus("JINS MEMEを検索中...")
+        
         //ステータス表示を初期化
         txtStatus.text = createStatusText(nil)
         
-        ArukuSurroundUtil.startWalk( self )
-        
-        //背景にMAPを表示する
-        reloadMap( ArukuSurroundUtil.utilDelegate.saveLogUuid )
+        //JINIS MEMEを検索して 歩行ログを記録開始
+        ArukuSurroundUtil.startWalk( self, mode:false )
         
         //STARTボタンを 非表示にする
         btnStart.hidden = true
+        btnDemoStart.hidden = true
+    }
+    
+    /** デモモードで歩く事を開始
+    *
+    */
+    @IBAction func clickBtnDemoStartWalk(sender: AnyObject) {
+        //SVProgressHUD.showWithStatus("JINS MEMEを検索中...")
+        
+        //ステータス表示を初期化
+        txtStatus.text = createStatusText(nil)
+        
+        //JINIS MEMEを検索して 歩行ログを記録開始 デモモードに設定
+        ArukuSurroundUtil.startWalk( self, mode:true )
+        
+        //STARTボタンを 非表示にする
+        btnStart.hidden = true
+        btnDemoStart.hidden = true
     }
     
     /** 歩く事を停止&保存
     *
     */
     @IBAction func clickBtnEndWalk(sender: AnyObject) {
-        ArukuSurroundUtil.endWalk()
+        SVProgressHUD.showWithStatus("保存中...")
         
-        //STARTボタンを 表示
-        btnStart.hidden = false
+        
+        ArukuSurroundUtil.endWalk { () -> Void in
+            
+            ArukuSurroundUtil.dispatch_async_main { () -> () in
+                SVProgressHUD.dismiss()
+            }
+            
+            //STARTボタンを 表示
+            self.btnStart.hidden = false
+            self.btnDemoStart.hidden = false
+            
+            ArukuSurroundUtil.showAlert(self, title:"保存", message: "冒険を保存しました！", btnTitle: "OK", callback: { () -> Void in
+                print("OK")
+            })
+        }
+        
+        
     }
     
     // MARK: - ArukuSurroundMEMEControllerDelegate
@@ -147,8 +189,10 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     *
     */
     func memePeripheralConnected(peripheral:CBPeripheral){
+        SVProgressHUD.dismiss()
+        
         //接続成功したので メガネ付きの BOCCO にアイコンを変更
-        imgViewBocco.image = UIImage(named:"paring_bocco_paird")
+        imgViewBocco.image = UIImage(named:"bocco_stop")
     }
     
     /** JINS MEMEとの切断を受け取る
@@ -158,10 +202,11 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     */
     func memePeripheralDisconneted(peripheral:CBPeripheral){
         //切断されたので 赤目のBOCCOにする
-        imgViewBocco.image = UIImage(named:"bocco_red_stop")
+        imgViewBocco.image = UIImage(named:"bocco_normal_red")
         
         //STARTボタンを 表示
         btnStart.hidden = false
+        btnDemoStart.hidden = false
     }
     
     
@@ -175,8 +220,13 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
         txtStatus.text = createStatusText(log)
         txtStatus.textColor = UIColor.whiteColor()
         
+        //バッテリー残量が 0 だった場合
+        if log.powerLeft.hashValue == 0 {
+            //テキストの色を 赤に変更
+            txtStatus.textColor = UIColor.redColor()
+        }
         //眠気が会った場合
-        if log.walkStatus == conditionSpeepy {
+        else if log.walkStatus == conditionSpeepy {
             //テキストの色を 橙に変更
             txtStatus.textColor = UIColor.orangeColor()
         }
@@ -215,7 +265,7 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     * @param data MEMEから取得したデータ
     *
     */
-    func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation: CLLocation!){
+    func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation: CLLocation!, currentHeading:CLHeading!){
         
         //歩行中かのステータス確認
         if data.isWalking != 1 {
@@ -262,6 +312,15 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
         }
         
         imgViewBocco.image = UIImage(named: iconName)
+        
+        if(self.isLoadMap == false){
+            //初回だけMAPをロードする
+            self.reloadMap( ArukuSurroundUtil.utilDelegate.saveLogUuid )
+            self.isLoadMap = true
+        }
+        
+        //コンパスに合わせて地図を回転させる
+        //viewWebMap.stringByEvaluatingJavaScriptFromString("p.map_rotate(-\(currentHeading.magneticHeading))")        
     }
     
     
@@ -270,7 +329,7 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     * @param data MEMEから取得したデータ
     *
     */
-    func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation: CLLocation!){
+    func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation: CLLocation!, currentHeading:CLHeading!){
     
     }
 }

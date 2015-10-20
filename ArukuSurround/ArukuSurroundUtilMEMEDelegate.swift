@@ -52,6 +52,9 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     // 接続中のJINS MEME
     var currentPeripheral:CBPeripheral! = nil
     
+    //DEMO用ロケーション
+    var demoCurrentLocation: CLLocationCoordinate2D!
+    
     /** 各カウンターをリセットする
     *
     */
@@ -60,7 +63,7 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
         lookingAroundCount = 0
         badPostureCount = 0
         runningCount = 0
-        
+        demoCurrentLocation = nil
         currentCondition = .Walking
     }
     
@@ -75,7 +78,8 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
         if peripheral.state == .Disconnected {
             //UUID決め打ちでつなぐ
             //TODO: 一度でも繋いだ事があると 勝手に繋がる...。(この仕様はバグの原因じゃないかなー
-            if peripheral.identifier.UUIDString == setting.jins_meme_device_uuid {
+            if setting.jins_meme_device_uuid?.characters.count == 0 || peripheral.identifier.UUIDString == setting.jins_meme_device_uuid {
+                print("connectPeripheral \(peripheral)")
                 MEMEController.connectPeripheral( peripheral );
             }
         }
@@ -125,15 +129,15 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     * @param data MEMEから取得したデータ
     *
     */
-    @objc func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation: CLLocation!){
+    @objc func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation: CLLocation!, currentHeading:CLHeading!){
         //歩くスピードで SE を変更したりする
         //print("memeRealTimeModeDataReceived \(data)")
         
-        doWalking(data,currentLocation: currentLocation)
+        doWalking(data,currentLocation: currentLocation, currentHeading:currentHeading)
         
         
         if viewMemeDelegate != nil {
-            viewMemeDelegate?.memeRealTimeModeDataReceived(data, currentLocation: currentLocation)
+            viewMemeDelegate?.memeRealTimeModeDataReceived(data, currentLocation:currentLocation, currentHeading:currentHeading)
         }
     }
     
@@ -143,7 +147,7 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     * @param data MEMEから取得したリアルタイムデータ
     *
     */
-    func doWalking(data: MEMERealTimeData,currentLocation: CLLocation!){
+    func doWalking(data: MEMERealTimeData,currentLocation: CLLocation!, currentHeading:CLHeading!){
         //歩行中かのステータスを確認
         if data.isWalking != 1 {
             return
@@ -236,16 +240,71 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
         log.lv = lv
         log.powerLeft = data.powerLeft
         
-        //ログをサーバに送信して保存
-        ArukuSurroundUtil.saveWalkLog(log)
+        //CEATEC向けに 位置情報を偽装する
+        if ArukuSurroundUtil.MODE_DEMO == true {
+            demo_move(log,currentLocation:currentLocation,currentHeading:currentHeading)
+        }
+        
+        //非同期でログ保存を実行する
+        ArukuSurroundUtil.dispatch_async_main { () -> () in
+            //ログをサーバに送信して保存
+            ArukuSurroundUtil.saveWalkLog(log)
+        }
         
         //デリゲートに通知
-        if viewMemeDelegate != nil {
-            viewMemeDelegate.doWalking(log)
+        if self.viewMemeDelegate != nil {
+            self.viewMemeDelegate.doWalking(log)
         }
         
         //音の処理をしたので 初期値に戻す
-        currentCondition = .Walking
+        self.currentCondition = .Walking
+
+    }
+    
+    //DEMO用移動
+    func demo_move(log:ArukuSurroundWalkLog, currentLocation: CLLocation!, currentHeading:CLHeading!){
+        // 参考 https://gist.github.com/naoty/5821666
+        
+        //初回だけ位置情報を設定
+        if demoCurrentLocation == nil {
+            demoCurrentLocation = currentLocation.coordinate
+        }
+        
+        //地球の半径
+        let EARTH_RADIUS:Double = 6378150
+        
+        //緯線上の移動距離
+        let latitude_distance = Config.DEMO_STEP_SIZE_METRE * cos(currentHeading.magneticHeading*M_PI/180)
+        
+        //1mあたりの緯度
+        let earth_circle = 2 * M_PI * EARTH_RADIUS
+        let latitude_per_meter = 360 / earth_circle
+        
+        //緯度の変化量
+        let latitude_delta = latitude_distance * latitude_per_meter
+        let new_latitude = demoCurrentLocation.latitude + latitude_delta
+        
+        //経線上の移動距離
+        let longitude_distance = Config.DEMO_STEP_SIZE_METRE * sin(currentHeading.magneticHeading * M_PI / 180)
+        
+        //1mあたりの経度
+        let earth_radius_at_longitude = EARTH_RADIUS * cos(new_latitude * M_PI / 180)
+        let earth_circle_at_longitude = 2 * M_PI * earth_radius_at_longitude
+        let longitude_per_meter = 360 / earth_circle_at_longitude
+        
+        //経度の変化量
+        let longitude_delta = longitude_distance * longitude_per_meter
+        let new_longitude = demoCurrentLocation.longitude + longitude_delta
+        
+        //print("new latitude:\(new_latitude) longitude:\(new_longitude)")
+        
+        //デモ用の位置情報を更新
+        demoCurrentLocation.latitude  = new_latitude
+        demoCurrentLocation.longitude = new_longitude
+        
+        //移動後の距離をログに設定
+        log.latitude  = new_latitude
+        log.longitude = new_longitude
     }
     
     /** MEME スタンダードモードのデータ受信
@@ -253,7 +312,7 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
     * @param data MEMEから取得したデータ
     *
     */
-    @objc func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation: CLLocation!){
+    @objc func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation: CLLocation!, currentHeading:CLHeading!){
         //print("memeStandardModeDataReceived \(data)")
         
         //眠気のステータスを確認
@@ -264,7 +323,7 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
         }
         
         if viewMemeDelegate != nil {
-            viewMemeDelegate?.memeStandardModeDataReceived(data, currentLocation: currentLocation)
+            viewMemeDelegate?.memeStandardModeDataReceived(data, currentLocation:currentLocation, currentHeading:currentHeading)
         }
         
     }
@@ -303,7 +362,7 @@ protocol ArukuSurroundMEMEControllerDelegate {
     * @param data MEMEから取得したデータ
     *
     */
-    func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation: CLLocation!)
+    func memeRealTimeModeDataReceived(data: MEMERealTimeData,currentLocation: CLLocation!, currentHeading:CLHeading!)
     
     
     /** MEME スタンダードモードのデータ受信
@@ -311,7 +370,7 @@ protocol ArukuSurroundMEMEControllerDelegate {
     * @param data MEMEから取得したデータ
     *
     */
-    func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation: CLLocation!)
+    func memeStandardModeDataReceived(data: MEMEStandardData,currentLocation: CLLocation!, currentHeading:CLHeading!)
     
     /** 歩行ログの通知
     *

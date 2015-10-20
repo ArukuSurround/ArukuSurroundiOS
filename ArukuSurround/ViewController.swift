@@ -33,15 +33,32 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        print("viewDidAppear")
+        
+        //MEMEとの接続を切断
+        ArukuSurroundUtil.memeDisconnect()
+        
+        //進捗ダイアログを非表示に
+        SVProgressHUD.dismiss()
+    }
+    
     /** Twitterでログイン
     *
     */
     @IBAction func clickBtnLoginTwitter(sender: AnyObject) {
+        SVProgressHUD.showWithStatus("ログイン中...")
+        
         //Twitterでログインする
         ArukuSurroundUtil.loginTwitter({ (user, error) -> Void in
             
             if user != nil {
                 print("ログイン成功 user:\(user)")
+                //進捗ダイアログを非表示に
+                SVProgressHUD.dismiss()
+                
                 //メイン画面へ遷移する
                 self.performSegueWithIdentifier("segueShowMain",sender: nil)
             }

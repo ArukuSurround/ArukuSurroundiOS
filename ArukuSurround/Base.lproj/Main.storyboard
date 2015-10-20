@@ -7,6 +7,8 @@
     <customFonts key="customFonts">
         <mutableArray key="PixelMplus12-Bold.ttf">
             <string>PixelMplus12-Bold</string>
+            <string>PixelMplus12-Bold</string>
+            <string>PixelMplus12-Bold</string>
         </mutableArray>
         <mutableArray key="PixelMplus12-Regular.ttf">
             <string>PixelMplus12-Regular</string>
@@ -37,12 +39,13 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z1M-aW-UJ8">
-                                <rect key="frame" x="231" y="285" width="138" height="30"/>
+                                <rect key="frame" x="150" y="285" width="300" height="100"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="8zn-Xs-Vt5"/>
-                                    <constraint firstAttribute="width" constant="138" id="S4p-Uv-M9v"/>
+                                    <constraint firstAttribute="height" constant="100" id="8zn-Xs-Vt5"/>
+                                    <constraint firstAttribute="width" constant="300" id="S4p-Uv-M9v"/>
                                 </constraints>
-                                <state key="normal" title="Twitter Login"/>
+                                <fontDescription key="fontDescription" name="PixelMplus12-Bold" family="PixelMplus12" pointSize="70"/>
+                                <state key="normal" title="Login" backgroundImage="btn_background"/>
                                 <connections>
                                     <action selector="clickBtnLoginTwitter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="vPY-j1-MvD"/>
                                 </connections>
@@ -51,7 +54,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="0nT-R1-c11" secondAttribute="trailing" constant="160" id="0ej-8c-Jzp"/>
-                            <constraint firstItem="z1M-aW-UJ8" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="BT5-G7-8nU"/>
+                            <constraint firstItem="z1M-aW-UJ8" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="35" id="BT5-G7-8nU"/>
                             <constraint firstItem="0nT-R1-c11" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="160" id="VVZ-Gs-cEs"/>
                             <constraint firstItem="0nT-R1-c11" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="39" id="pJh-8l-KDN"/>
                             <constraint firstItem="z1M-aW-UJ8" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="rmh-kc-Tyw"/>
@@ -85,7 +88,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rna-39-Lhw">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bocco_stop_red" translatesAutoresizingMaskIntoConstraints="NO" id="Ai2-Nf-cYi" userLabel="imgViewBocco">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bocco_normal_red" translatesAutoresizingMaskIntoConstraints="NO" id="Ai2-Nf-cYi" userLabel="imgViewBocco">
                                         <rect key="frame" x="250" y="218" width="100" height="100"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="100" id="Moa-rO-icn"/>
@@ -203,16 +206,32 @@
                                             <action selector="clickBtnStartWalk:" destination="5qg-1Q-4r5" eventType="touchUpInside" id="XQc-fD-pKb"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WQI-Id-bRc">
+                                        <rect key="frame" x="150" y="326" width="300" height="100"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="300" id="KkC-tN-yJX"/>
+                                            <constraint firstAttribute="height" constant="100" id="Ye5-dD-cbM"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="PixelMplus12-Bold" family="PixelMplus12" pointSize="70"/>
+                                        <state key="normal" title="DEMO" backgroundImage="btn_background">
+                                            <color key="titleColor" red="1" green="0.16983289600000001" blue="0.18623844279999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="clickBtnDemoStartWalk:" destination="5qg-1Q-4r5" eventType="touchUpInside" id="Avo-sz-07J"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="vem-aa-2we" firstAttribute="centerY" secondItem="Rna-39-Lhw" secondAttribute="centerY" constant="-32" id="0Zl-Uw-6Uv"/>
                                     <constraint firstItem="rTH-1I-6t4" firstAttribute="leading" secondItem="Rna-39-Lhw" secondAttribute="leading" id="114-ln-jyf"/>
+                                    <constraint firstItem="WQI-Id-bRc" firstAttribute="centerX" secondItem="Rna-39-Lhw" secondAttribute="centerX" id="3Kz-vL-oj0"/>
                                     <constraint firstItem="Ai2-Nf-cYi" firstAttribute="centerX" secondItem="Rna-39-Lhw" secondAttribute="centerX" id="6uM-MP-53r"/>
                                     <constraint firstItem="Ai2-Nf-cYi" firstAttribute="centerY" secondItem="Rna-39-Lhw" secondAttribute="centerY" constant="-32" id="7b3-t5-lTS"/>
                                     <constraint firstItem="vem-aa-2we" firstAttribute="centerX" secondItem="Rna-39-Lhw" secondAttribute="centerX" id="8xv-Np-ni9"/>
                                     <constraint firstAttribute="bottom" secondItem="rTH-1I-6t4" secondAttribute="bottom" constant="4" id="Zh7-38-sV2"/>
                                     <constraint firstAttribute="trailing" secondItem="rTH-1I-6t4" secondAttribute="trailing" id="pL3-eo-ttT"/>
+                                    <constraint firstItem="WQI-Id-bRc" firstAttribute="top" secondItem="vem-aa-2we" secondAttribute="bottom" constant="8" id="xYw-Hy-eCt"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -230,6 +249,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="kqY-jN-3Cb"/>
                     <connections>
+                        <outlet property="btnDemoStart" destination="WQI-Id-bRc" id="qTW-2G-BRX"/>
                         <outlet property="btnStart" destination="vem-aa-2we" id="rkD-p8-gJn"/>
                         <outlet property="imgViewBocco" destination="Ai2-Nf-cYi" id="ojg-Ve-kVP"/>
                         <outlet property="txtStatus" destination="CDy-pA-TeV" id="etM-e1-2tZ"/>
@@ -378,7 +398,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="bocco_stop_red" width="192" height="192"/>
+        <image name="bocco_normal_red" width="192" height="192"/>
         <image name="btn_background" width="750" height="170"/>
         <image name="preference_icon" width="40" height="40"/>
         <image name="save_icon" width="40" height="40"/>
