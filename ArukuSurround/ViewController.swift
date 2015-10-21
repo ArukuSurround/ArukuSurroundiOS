@@ -53,17 +53,26 @@ class ViewController: UIViewController {
         
         //Twitterでログインする
         ArukuSurroundUtil.loginTwitter({ (user, error) -> Void in
+            //進捗ダイアログを非表示に
+            ArukuSurroundUtil.dispatch_async_main { () -> () in
+                SVProgressHUD.dismiss()
+            }
             
             if user != nil {
                 print("ログイン成功 user:\(user)")
-                //進捗ダイアログを非表示に
-                SVProgressHUD.dismiss()
+                
+                //ドア音 再生
+                SoundEffectUtil.play("door")
                 
                 //メイン画面へ遷移する
                 self.performSegueWithIdentifier("segueShowMain",sender: nil)
             }
             else{
                 print("ログイン失敗 error:\(error)")
+                
+                //呪い音再生
+                SoundEffectUtil.play("curse")
+                
                 //アラートを表示する
                 ArukuSurroundUtil.showAlert(self, title:"失敗", message: "ログインに失敗しました。", btnTitle: "OK", callback: { () -> Void in
                      print("OK")

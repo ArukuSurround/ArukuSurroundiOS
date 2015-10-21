@@ -152,17 +152,19 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     @IBAction func clickBtnEndWalk(sender: AnyObject) {
         SVProgressHUD.showWithStatus("保存中...")
         
+        //宿の効果音
+        SoundEffectUtil.play("save")
         
         ArukuSurroundUtil.endWalk { () -> Void in
             
             ArukuSurroundUtil.dispatch_async_main { () -> () in
                 SVProgressHUD.dismiss()
+                
+                //STARTボタンを 表示
+                self.btnStart.hidden = false
+                self.btnDemoStart.hidden = false
             }
-            
-            //STARTボタンを 表示
-            self.btnStart.hidden = false
-            self.btnDemoStart.hidden = false
-            
+
             ArukuSurroundUtil.showAlert(self, title:"保存", message: "冒険を保存しました！", btnTitle: "OK", callback: { () -> Void in
                 print("OK")
             })
@@ -193,6 +195,9 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
         
         //接続成功したので メガネ付きの BOCCO にアイコンを変更
         imgViewBocco.image = UIImage(named:"bocco_stop")
+        
+        //ピッの効果音
+        SoundEffectUtil.play("choice")
     }
     
     /** JINS MEMEとの切断を受け取る
@@ -201,12 +206,25 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     *
     */
     func memePeripheralDisconneted(peripheral:CBPeripheral){
-        //切断されたので 赤目のBOCCOにする
-        imgViewBocco.image = UIImage(named:"bocco_normal_red")
         
-        //STARTボタンを 表示
-        btnStart.hidden = false
-        btnDemoStart.hidden = false
+        //呪い音再生
+        SoundEffectUtil.play("curse")
+        
+        //切断された
+        ArukuSurroundUtil.dispatch_async_main { () -> () in
+            SVProgressHUD.dismiss()
+            
+            //赤目のBOCCOにする
+            self.imgViewBocco.image = UIImage(named:"bocco_normal_red")
+            
+            //STARTボタンを 表示
+            self.btnStart.hidden = false
+            self.btnDemoStart.hidden = false
+        }
+        
+        ArukuSurroundUtil.showAlert(self, title:"切断", message: "MEMEから切断されました。", btnTitle: "OK", callback: { () -> Void in
+            print("OK")
+        })
     }
     
     
@@ -238,7 +256,7 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     */
     func createStatusText(log:ArukuSurroundWalkLog?) -> String {
         var lv:Int = 1
-        var hp:Int = 100
+        var hp:Int = 0
         let maxHp:Int = 100
         var status:String = "けんこう"
         var stepCount:Int = 0
