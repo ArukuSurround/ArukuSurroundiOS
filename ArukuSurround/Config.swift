@@ -47,4 +47,7 @@ public class Config {
     
     //歩行のカウント
     public static let STEP_COUNT_THRESHOLD = 20
+    
+    //マップイベントの検索 範囲 km
+    public static let MAP_EVENT_WITH_IN_KILOMETERS = 0.1 * 2
 }

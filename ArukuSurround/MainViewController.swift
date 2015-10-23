@@ -47,6 +47,9 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     //MAPをロードしたか確認
     var isLoadMap:Bool = false
     
+    //通知済みのキャッシュ
+    var notifyCache:[String:ArukuSurroundMapEvent]! = [:]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -116,7 +119,15 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     *
     */
     @IBAction func clickBtnStartWalk(sender: AnyObject) {
-        //SVProgressHUD.showWithStatus("JINS MEMEを検索中...")
+        SVProgressHUD.showWithStatus("JINS MEMEを検索中...")
+        NSTimer.scheduledTimerWithTimeInterval(3.0, target: NSBlockOperation(block: {
+            ArukuSurroundUtil.dispatch_async_main({ () -> () in
+                SVProgressHUD.dismiss()
+            })
+        }), selector: "main" , userInfo: nil, repeats: true)
+        
+        //ピッの効果音
+        SoundEffectUtil.play("choice")
         
         //ステータス表示を初期化
         txtStatus.text = createStatusText(nil)
@@ -133,7 +144,16 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
     *
     */
     @IBAction func clickBtnDemoStartWalk(sender: AnyObject) {
-        //SVProgressHUD.showWithStatus("JINS MEMEを検索中...")
+        SVProgressHUD.showWithStatus("JINS MEMEを検索中...")
+        
+        NSTimer.scheduledTimerWithTimeInterval(3.0, target: NSBlockOperation(block: {
+            ArukuSurroundUtil.dispatch_async_main({ () -> () in
+                SVProgressHUD.dismiss()
+            })
+        }), selector: "main" , userInfo: nil, repeats: true)
+        
+        //ピッの効果音
+        SoundEffectUtil.play("choice")
         
         //ステータス表示を初期化
         txtStatus.text = createStatusText(nil)
@@ -155,7 +175,17 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
         //宿の効果音
         SoundEffectUtil.play("save")
         
-        ArukuSurroundUtil.endWalk { () -> Void in
+        ArukuSurroundUtil.endWalk { (result) -> Void in
+            
+            if result == false {
+                //エラーが発生
+                //呪い音再生
+                SoundEffectUtil.play("curse")
+                ArukuSurroundUtil.showAlert(self, title:"失敗", message: "お気の毒ですが保存に失敗しました...", btnTitle: "OK", callback: { () -> Void in
+                    print("OK")
+                })
+                return
+            }
             
             ArukuSurroundUtil.dispatch_async_main { () -> () in
                 SVProgressHUD.dismiss()
@@ -169,8 +199,6 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
                 print("OK")
             })
         }
-        
-        
     }
     
     // MARK: - ArukuSurroundMEMEControllerDelegate
@@ -250,6 +278,40 @@ class MainViewController: UIViewController,ArukuSurroundMEMEControllerDelegate {
         }
         
         currentWalkingLog = log
+    }
+    
+    /** 現在位置にマップイベントが登録されてる事を通知
+    * @param event DBから取得したイベント一覧
+    */
+    func doMapEvent(events:[ArukuSurroundMapEvent]){
+        //print("events:\(events)")
+        
+        //近くにイベントがあったので一番 近い情報をプッシュ通知する
+        let event = events[0]
+        print("event message:\(event.message)")
+        //未登録ならプッシュ通知
+        if self.notifyCache[event.uuid] == nil {
+            //print("event message:\(event.message)")
+            
+            //一度 通知したら しばらく通知しない
+            NSTimer.scheduledTimerWithTimeInterval(60.0, target: NSBlockOperation(block: {
+                ArukuSurroundUtil.dispatch_async_main({ () -> () in
+                    //通知済みのモノを削除する
+                    //print("event remove:\(event.uuid)")
+                    self.notifyCache.removeValueForKey(event.uuid)
+                })
+            }), selector: "main" , userInfo: nil, repeats: true)
+            
+            self.notifyCache[event.uuid] = event
+        
+            //プッシュ通知する
+            ArukuSurroundUtil.scheduleLocalNotification(event.message)
+            
+            //アラートを表示
+            ArukuSurroundUtil.showAlert(self, title: "通知", message: event.message, btnTitle: "OK") { () -> Void in
+                print("OK")
+            }
+        }
     }
     
     /** 表示用のテキストを生成する

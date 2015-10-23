@@ -45,6 +45,10 @@ class ArukuSurroundUtil:NSObject {
     *
     */
     static func didFinishLaunchingWithOptions() {
+        
+        //プシュ通知のパーミッションを確認する
+        self.registerUserNotificationSetting()
+        
         //オーディオセッション 初期設定
         SoundEffectUtil.initAudioSession()
 
@@ -360,8 +364,6 @@ class ArukuSurroundUtil:NSObject {
                     }
                 }
                 
-                //TODO: サーバへアクセスして周辺のイベントを取得する
-                
                 //集計結果をコールバックする
                 let data:NSDictionary = ["stepCount":stepCount,
                     "runningCount":runningCount,
@@ -376,6 +378,50 @@ class ArukuSurroundUtil:NSObject {
                print("[QUERY-ERROR] \(error)");
             }
         })
+    }
+    
+    /** 保存済みの設定値をロードする
+    * @param latitude 緯度
+    * @param longitude 経度
+    * @param withinKilometers 範囲 km
+    * @param callback 結果通知先ブロック
+    */
+    static func loadMapEvent ( latitude:Double, longitude:Double, withinKilometers:Double , callback: ((data:[ArukuSurroundMapEvent]?,error:NSError?)->Void)){
+     
+        //検索位置
+        let point:NCMBGeoPoint = NCMBGeoPoint.init(latitude:latitude, longitude:longitude)
+        
+        let query:NCMBQuery = NCMBQuery.init(className:"MapEvent")
+        query.whereKey("location",nearGeoPoint:point,withinKilometers:withinKilometers)
+        query.limit = 5;
+        query.findObjectsInBackgroundWithBlock { (NSArray objects, NSError error) in
+            if error != nil {
+                //エラー
+                callback(data:nil,error:error)
+                return
+            }
+            
+            var tmpData:[ArukuSurroundMapEvent] = []
+            for element in objects {
+                //print("element:\(element)")
+                let obj = ArukuSurroundMapEvent()
+                
+                let objectId = element.objectForKey("objectId") as! String
+                let location = element.objectForKey("location") as! NCMBGeoPoint
+                
+                obj.uuid      = objectId
+                obj.iconType  = element.objectForKey("iconType") as? UInt8
+                obj.eventType = element.objectForKey("eventType") as? UInt8
+                obj.latitude  = location.latitude
+                obj.longitude = location.longitude
+                obj.message   = element.objectForKey("message") as! String
+                                
+                tmpData.append(obj)
+            }
+            
+            //callbackで通知
+            callback(data:tmpData,error:nil)
+        }
     }
     
     /** 歩くの処理を開始
@@ -405,7 +451,7 @@ class ArukuSurroundUtil:NSObject {
     /** 歩く処理を終了
     *
     */
-    static func endWalk(callback:(()->Void)){
+    static func endWalk(callback:((Bool)->Void)){
         print("endWalk");
         
         //接続中のMEMEから切断
@@ -455,8 +501,15 @@ class ArukuSurroundUtil:NSObject {
             
             BoccoAPI.postMessageText( setting.bocco_room_id!, access_token: setting.bocco_access_token!, text: text,
                 callback: { (result) -> Void in
-                    //保存結果を通知
-                    callback()
+                    
+                    if result != nil {
+                        //保存結果を通知
+                        callback(true)
+                    }
+                    else{
+                        //エラー
+                        callback(false)
+                    }
             })
         })
     }
@@ -511,6 +564,30 @@ class ArukuSurroundUtil:NSObject {
         
         vc.presentViewController(alertController, animated: true, completion: nil)
     }
+    
+    //ローカル通知 パーミッションを設定
+    static func registerUserNotificationSetting(){
+        UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes:[.Alert,.Sound], categories: nil))
+    }
+    
+    /** ローカル通知
+    *
+    * @param application アプリケーション
+    * @param alertBody 通知テキスト
+    */
+    static func scheduleLocalNotification(alertBody:String){
+        //現在の通知を全て削除する
+        UIApplication.sharedApplication().cancelAllLocalNotifications()
+
+        let notification = UILocalNotification()
+        notification.fireDate = NSDate()
+        notification.timeZone = NSTimeZone.defaultTimeZone()
+        notification.alertBody = alertBody
+        notification.alertAction = "OK"
+        notification.soundName = UILocalNotificationDefaultSoundName
+        
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+    }
 }
 
 
@@ -547,14 +624,17 @@ class ArukuSurroundWalkLog {
 }
 
 /** 歩行中マップイベント
-*  TODO:
+*
 */
-class ArukuSurroundWalkMapEvent {
+class ArukuSurroundMapEvent {
     //イベント識別
     var uuid:String!
     
+    //アイコン タイプ
+    var iconType:UInt8!
+    
     //イベント タイプ
-    var type:UInt8!
+    var eventType:UInt8!
     
     //緯度
     var latitude:Double!
@@ -563,8 +643,5 @@ class ArukuSurroundWalkMapEvent {
     var longitude:Double!
     
     //イベント タイトル
-    var title:String!
-    
-    //イベント 内容テキスト
-    var detail:String!
+    var message:String!
 }

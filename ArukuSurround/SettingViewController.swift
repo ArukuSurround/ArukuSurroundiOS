@@ -77,8 +77,10 @@ class SettingViewController: UIViewController {
                         self.updateSetting({ (error) -> Void in
                             //保存 結果
                             if error == nil {
-                                //画面を閉じる
-                                self.dismissViewControllerAnimated(true, completion: nil)
+                                ArukuSurroundUtil.dispatch_async_main({ () -> () in
+                                    //画面を閉じる
+                                    self.dismissViewControllerAnimated(true, completion: nil)
+                                })
                             }
                             else{
                             ArukuSurroundUtil.showAlert(self,

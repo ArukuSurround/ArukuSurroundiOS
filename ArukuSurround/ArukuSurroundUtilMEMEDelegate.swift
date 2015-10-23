@@ -245,8 +245,24 @@ class ArukuSurroundUtilMEMEDelegate:MEMEControllerDelegate {
             demo_move(log,currentLocation:currentLocation,currentHeading:currentHeading)
         }
         
+        //非同期で周辺イベントを取得する
+        ArukuSurroundUtil.dispatch_async_main { () -> () in
+            
+            //イベント一を取得
+            ArukuSurroundUtil.loadMapEvent(log.latitude, longitude:log.longitude, withinKilometers: Config.MAP_EVENT_WITH_IN_KILOMETERS, callback: { (data, error) -> Void in
+                
+                if error == nil && data != nil && data!.count > 0 {
+                    //イベントが会ったことをデリゲートに通知
+                    if self.viewMemeDelegate != nil {
+                        self.viewMemeDelegate.doMapEvent(data!)
+                    }
+                }
+            })
+        }
+        
         //非同期でログ保存を実行する
         ArukuSurroundUtil.dispatch_async_main { () -> () in
+            
             //ログをサーバに送信して保存
             ArukuSurroundUtil.saveWalkLog(log)
         }
@@ -377,5 +393,10 @@ protocol ArukuSurroundMEMEControllerDelegate {
     * @param log MEMEから取得したデータを元に作成したログ
     *
     */
-   func doWalking(log:ArukuSurroundWalkLog)
+    func doWalking(log:ArukuSurroundWalkLog)
+    
+    /** 現在位置にマップイベントが登録されてる事を通知
+    * @param event DBから取得したイベント一覧
+    */
+    func doMapEvent(events:[ArukuSurroundMapEvent])
 }

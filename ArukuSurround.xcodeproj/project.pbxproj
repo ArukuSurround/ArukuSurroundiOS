@@ -43,6 +43,7 @@
 		45D1AAD01BD739AB0011ED20 /* door.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 45D1AACF1BD739AB0011ED20 /* door.mp3 */; settings = {ASSET_TAGS = (); }; };
 		45D320781BB3CBF6006B046C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D320771BB3CBF6006B046C /* MainViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		45D3207A1BB3D9AD006B046C /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D320791BB3D9AD006B046C /* SettingViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		45E4059D1BDA4A710008F9D6 /* wall.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 45E4059C1BDA4A710008F9D6 /* wall.mp3 */; settings = {ASSET_TAGS = (); }; };
 		45EF838E1BBAA962003AF056 /* BleDeviceService.m in Sources */ = {isa = PBXBuildFile; fileRef = 45EF83821BBAA962003AF056 /* BleDeviceService.m */; settings = {ASSET_TAGS = (); }; };
 		45EF838F1BBAA962003AF056 /* HVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 45EF83841BBAA962003AF056 /* HVC.m */; settings = {ASSET_TAGS = (); }; };
 		45EF83901BBAA962003AF056 /* HVC_BLE.m in Sources */ = {isa = PBXBuildFile; fileRef = 45EF83861BBAA962003AF056 /* HVC_BLE.m */; settings = {ASSET_TAGS = (); }; };
@@ -126,6 +127,7 @@
 		45D1AACF1BD739AB0011ED20 /* door.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = door.mp3; sourceTree = "<group>"; };
 		45D320771BB3CBF6006B046C /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		45D320791BB3D9AD006B046C /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		45E4059C1BDA4A710008F9D6 /* wall.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = wall.mp3; sourceTree = "<group>"; };
 		45EF83811BBAA962003AF056 /* BleDeviceService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BleDeviceService.h; sourceTree = "<group>"; };
 		45EF83821BBAA962003AF056 /* BleDeviceService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BleDeviceService.m; sourceTree = "<group>"; };
 		45EF83831BBAA962003AF056 /* HVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HVC.h; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 		457B06A71BB10B5200E1E5F9 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				45E4059C1BDA4A710008F9D6 /* wall.mp3 */,
 				45D1AACF1BD739AB0011ED20 /* door.mp3 */,
 				45D1AACD1BD739340011ED20 /* save.mp3 */,
 				45D1AAC91BD7385A0011ED20 /* inn.mp3 */,
@@ -430,6 +433,7 @@
 				457B06C31BB10BB800E1E5F9 /* coin.mp3 in Resources */,
 				45D1AAC81BD737D90011ED20 /* lvup.mp3 in Resources */,
 				457B06C91BB10BB800E1E5F9 /* PixelMplus12-Regular.ttf in Resources */,
+				45E4059D1BDA4A710008F9D6 /* wall.mp3 in Resources */,
 				45D1AAC41BD735BA0011ED20 /* choice.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

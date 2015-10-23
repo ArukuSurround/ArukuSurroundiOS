@@ -19,7 +19,7 @@ public class BoccoAPI {
      * @param access_token アクセストークン
      *
      */
-    static func getMessages(room_id:String,access_token:String, callback:(NSArray)->Void){
+    static func getMessages(room_id:String,access_token:String, callback:(NSArray?)->Void){
     
         let url:String = (API_HOST_URL+"?access_token="+access_token).stringByReplacingOccurrencesOfString("{room_id}", withString: room_id)
         //print("url:\(url)")
@@ -33,7 +33,9 @@ public class BoccoAPI {
                 //コールバック
                 callback(result)                
             } else {
+                //エラー
                 print(error)
+                callback(nil)
             }
         })
         taskRequest.resume()
@@ -60,7 +62,7 @@ public class BoccoAPI {
     /** テキストメッセージを送信
      *
      */
-    public static func postMessageText(room_id:String, access_token:String, text:String, callback:(NSDictionary)->Void){
+    public static func postMessageText(room_id:String, access_token:String, text:String, callback:(NSDictionary?)->Void){
         
         //POST先URL作成
         let url = API_HOST_URL.stringByReplacingOccurrencesOfString("{room_id}", withString: room_id)
@@ -85,7 +87,9 @@ public class BoccoAPI {
                 //コールバック
                 callback(result)
             } else {
+                //エラー
                 print(error)
+                callback(nil)
             }
         })
         taskRequest.resume()
